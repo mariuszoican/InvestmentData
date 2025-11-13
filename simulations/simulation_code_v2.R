@@ -49,8 +49,8 @@ sells <- informed_sells + uninformed_sells
 
 # show short stubs instead of true zeros if order flow is zero on one side
 stub <- 0.2
-buys_disp  <- pmax(buys,  stub)
-sells_disp <- pmax(sells, stub)   # will be plotted as negative
+buys_disp  <- ifelse(buys  == 0, stub, buys)
+sells_disp <- ifelse(sells == 0, stub, sells)
 
 ## ----------------------------
 ## Geometry for bars (predictive: between t-1 and t)
@@ -147,7 +147,7 @@ buys  <- informed_buys  + uninformed_buys
 sells <- informed_sells + uninformed_sells
 
 # show short stubs instead of true zeros if order flow is zero on one side
-stub <- 0.2
+stub <- 0.5
 buys_disp  <- pmax(buys,  stub)
 sells_disp <- pmax(sells, stub)   # will be plotted as negative
 
@@ -166,7 +166,7 @@ sell_xmax <- centers + gap/2 + w
 # y-limits for order flow: buys positive, sells negative
 orders_ylim <- c(-max(sells_disp) * 1.15,
                  max(buys_disp) * 1.15)
-price_ylim  <- range(S)
+price_ylim  <- c(min(S)*0.9, max(S)*1.1)
 
 ## ----------------------------
 ## Time labels: 09:00–17:00 every 30min
@@ -198,27 +198,30 @@ fname <- sprintf("plots/pricesimulation_seed_%d_alpha_%d.png",
 
 # Layout: price panel tall, order-flow panel short
 layout(matrix(c(1, 2), nrow = 2),
-       heights = c(1.5, 1))   # price gets 3x the height of order flow
+       heights = c(1.2, 1))   # price gets 3x the height of order flow
 
-## ------------------------------
-## 1) TOP PANEL: PRICE (with gray bands)
-## ------------------------------
+
 ## ------------------------------
 ## 1) TOP PANEL: PRICE (with gray bands)
 ## ------------------------------
 par(mar = c(1, 4, 4, 2), mgp = c(2.2, 0.6, 0))
 
 # Empty canvas first
-plot(0, type = "n",
+plot(price_x, S[1:N], type = "o", lwd = 2, col = "blue",
+     xlab = "Time", ylab = "Stock price",
      xlim = c(0, N + 1), ylim = price_ylim,
-     xaxt = "n", xlab = "", ylab = "Stock price",
-     main = "Price and predictive order flow")
+     xaxs = "i", xaxt = "n", yaxt = "s")
+
+# Get actual y-limits of this panel
+usr <- par("usr")          # c(xmin, xmax, ymin, ymax)
+ymin <- usr[3]
+ymax <- usr[4]
 
 # Alternating gray bands across full vertical range
 for (t in 1:(N + 1)) {
-  rect(t - 1, price_ylim[1],
-       t,     price_ylim[2],
-       col = ifelse(t %% 2 == 0, gray(0.99), gray(0.95)),
+  rect(t - 1, ymin,
+       t,     ymax,
+       col = ifelse(t %% 2 == 0, gray(0.99), gray(0.9)),
        border = NA)
 }
 
@@ -253,7 +256,7 @@ text(x_pred, y_last, labels = "?", pos = 4,
 # Legend at top, horizontal, like a title bar
 legend("top",
        horiz = TRUE,
-       inset = c(0, -0.1),
+       inset = c(0, -0.2),
        xpd   = TRUE,
        legend = c("Price", "Buy orders", "Sell orders"),
        col    = c("blue", rgb(0, 0.6, 0, 0.6), rgb(0.8, 0, 0, 0.6)),
@@ -266,7 +269,8 @@ legend("top",
 ## ------------------------------
 ## 2) BOTTOM PANEL: ORDER FLOW (narrower)
 ## ------------------------------
-par(mar = c(4, 4, 2, 4), mgp = c(2.2, 0.6, 0))
+#par(mar = c(1, 4, 4, 2), mgp = c(2.2, 0.6, 0))
+par(mar = c(4, 4, 2, 2), mgp = c(2.2, 0.6, 0))
 
 plot(NA, xlim = c(0, N + 1), ylim = orders_ylim,
      xaxs = "i", yaxs = "i",
@@ -295,7 +299,7 @@ rect(sell_xmin, 0, sell_xmax, -sells_disp,
 
 # Axes
 axis(2, las = 1)
-axis(4, las = 1)
+#axis(4, las = 1)
 
 # Common x-axis (only here, bottom panel)
 axis(1, at = label_pos, labels = time_labels,
