@@ -11,10 +11,12 @@ S0 <- 100         # initial stock price
 N <- 16           # number of periods in time series
 steps <- c(5, 10, 15)  # possible move sizes
 lambda <- 8 # order arrival rate per period
-alpha <- 1 # fraction of informed traders
+alpha <- 0.3 # fraction of informed traders
+
+informative <-0 # round is informative?
 
 # set seed for reproducibility
-seed <- 448
+seed <- 333
 set.seed(seed) 
 
 # initialize price vector
@@ -32,119 +34,33 @@ for (t in 1:N) {
 
 # simulate order flow
 total_orders      <- rpois(N, lambda) # total orders per period
-informed_orders   <- rbinom(N, size = total_orders, prob = alpha) # how many informed?
-uninformed_orders <- total_orders - informed_orders               # how many uninformed?
 
-# Informed: all trade in the direction of the next move
-informed_buys  <- ifelse(move_direction ==  1L, informed_orders, 0L)
-informed_sells <- ifelse(move_direction == -1L, informed_orders, 0L)
+# directional vs nondirectional
+directional_orders <- rbinom(N, size = total_orders, prob = alpha)
+nondirectional_orders <- total_orders - directional_orders
 
-# Uninformed: random buys/sells
-uninformed_buys  <- rbinom(N, size = uninformed_orders, prob = 0.5)
-uninformed_sells <- uninformed_orders - uninformed_buys
+# sign of directional traders
+directional_sign <- integer(N)
 
-# Totals per period
-buys  <- informed_buys  + uninformed_buys
-sells <- informed_sells + uninformed_sells
-
-# show short stubs instead of true zeros if order flow is zero on one side
-stub <- 0.2
-buys_disp  <- ifelse(buys  == 0, stub, buys)
-sells_disp <- ifelse(sells == 0, stub, sells)
-
-## ----------------------------
-## Geometry for bars (predictive: between t-1 and t)
-## ----------------------------
-centers <- (1:N) - 0.5      # each period [t-1, t] centered at t-0.5
-gap <- 0.12
-w   <- 0.35
-
-buy_xmin  <- centers - gap/2 - w
-buy_xmax  <- centers - gap/2
-sell_xmin <- centers + gap/2
-sell_xmax <- centers + gap/2 + w
-
-# y-limits for order flow: buys positive, sells negative
-orders_ylim <- c(-max(sells_disp) * 1.15,
-                 max(buys_disp) * 1.15)
-price_ylim  <- range(S)
-
-## ----------------------------
-## Time labels: 09:00–17:00 every 30min
-## ----------------------------
-times <- seq(from = as.POSIXct("09:00", format = "%H:%M"),
-             to   = as.POSIXct("17:00", format = "%H:%M"),
-             by   = "30 min")
-time_labels <- format(times, "%H:%M")
-
-# positions: 09:00..16:30 at centers 0.5..15.5, 17:00 at 16.5
-price_x    <- seq(0.5, N - 0.5, by = 1)    # 16 real points
-label_pos  <- c(price_x, N + 0.5)          # add 17:00 at 16.5
-
-## ----------------------------
-## Plot
-## ----------------------------
-
-if (!is.null(dev.list())) dev.off()
-
-if (!dir.exists("plots")) {
-  dir.create("plots", recursive = TRUE)
-  message("Created plots directory.")
+if (informative == 1L) {
+  # directional traders always in direction of price move
+  directional_sign <- move_direction          # +1 or -1
 } else {
-  message("Directory exists.")
+  # non-informative: same aggressiveness, random sign independent of move
+  directional_sign <- sample(c(-1L, 1L), N, replace = TRUE)
 }
 
-fname <- sprintf("plots/pricesimulation_seed_%d_alpha_%d.png",
-                 seed, as.integer(100 * alpha))
+# directional volumes
+dir_buys  <- ifelse(directional_sign ==  1L, directional_orders, 0L)
+dir_sells <- ifelse(directional_sign == -1L, directional_orders, 0L)
 
-### Code to simulate price and order flow
-### -------------------------------------
-
-# use local folder
-library(here)
-library(rstudioapi)
-setwd(dirname(getActiveDocumentContext()$path))
-
-# Parameters
-S0 <- 100         # initial stock price
-N <- 16           # number of periods in time series
-steps <- c(5, 10, 15)  # possible move sizes
-lambda <- 8 # order arrival rate per period
-alpha <- 1 # fraction of informed traders
-
-# set seed for reproducibility
-seed <- 448
-set.seed(seed) 
-
-# initialize price vector
-S <- numeric(N + 1)
-S[1] <- S0 # first price
-move_direction <- integer(N) # move directions, could be +1 or -1
-move_size <- integer(N) # can be 5, 10, or 15.
-
-# simulate prices
-for (t in 1:N) {
-  move_size[t] <- sample(steps, 1)
-  move_direction[t] <- sample(c(-1, 1), 1)
-  S[t + 1] <- S[t] + move_direction[t] * move_size[t]
-}
-
-# simulate order flow
-total_orders      <- rpois(N, lambda) # total orders per period
-informed_orders   <- rbinom(N, size = total_orders, prob = alpha) # how many informed?
-uninformed_orders <- total_orders - informed_orders               # how many uninformed?
-
-# Informed: all trade in the direction of the next move
-informed_buys  <- ifelse(move_direction ==  1L, informed_orders, 0L)
-informed_sells <- ifelse(move_direction == -1L, informed_orders, 0L)
-
-# Uninformed: random buys/sells
-uninformed_buys  <- rbinom(N, size = uninformed_orders, prob = 0.5)
-uninformed_sells <- uninformed_orders - uninformed_buys
+# nondirectional (noise) traders: random split
+noise_buys  <- rbinom(N, size = nondirectional_orders, prob = 0.5)
+noise_sells <- nondirectional_orders - noise_buys
 
 # Totals per period
-buys  <- informed_buys  + uninformed_buys
-sells <- informed_sells + uninformed_sells
+buys  <- dir_buys  + noise_buys
+sells <- dir_sells + noise_sells
 
 # show short stubs instead of true zeros if order flow is zero on one side
 stub <- 0.5
