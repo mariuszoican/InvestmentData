@@ -1,4 +1,7 @@
-### Price process simulations
+### Code to simulate price and order flow
+### -------------------------------------
+
+# use local folder
 library(here)
 library(rstudioapi)
 setwd(dirname(getActiveDocumentContext()$path))
@@ -11,28 +14,27 @@ lambda <- 8 # order arrival rate per period
 alpha <- 1 # fraction of informed traders
 
 # set seed for reproducibility
-seed <-123
+seed <-444
 set.seed(seed) 
 
 # initialize price vector
 S <- numeric(N + 1)
-S[1] <- S0
+S[1] <- S0 # first price
 move_direction <- integer(N) # move directions, could be +1 or -1
 move_size <-integer(N) # can be 5, 10, or 15.
 
+# simulate prices
 for (t in 1:N) {
   move_size[t]<-sample(steps,1)
   move_direction[t]<-sample(c(-1,1),1)
   S[t+1] <- S[t]+move_direction[t] * move_size[t]
 }
 
-# Price midpoint times (center each price between t-1 and t)
-price_x <- seq(0.5, N - 0.5, by = 1)
 
 # simulate order flow
-total_orders <- rpois(N,lambda)
-informed_orders <-rbinom(N, size=total_orders, prob=alpha)
-uninformed_orders <- total_orders - informed_orders
+total_orders <- rpois(N,lambda) # total orders per period
+informed_orders <-rbinom(N, size=total_orders, prob=alpha) # how many informed?
+uninformed_orders <- total_orders - informed_orders # how many uninformed?
 
 
 # Informed: all trade in the direction of the next move
@@ -46,7 +48,9 @@ uninformed_sells <- uninformed_orders - uninformed_buys
 # Totals per period
 buys  <- informed_buys  + uninformed_buys
 sells <- informed_sells + uninformed_sells
-# show short stubs instead of true zeros
+
+# show short stubs instead of true zeros if order flow is zero on one side
+stub <- 0.2
 buys_disp  <- pmax(buys,  stub)
 sells_disp <- pmax(sells, stub)
 
@@ -63,6 +67,7 @@ sell_xmin <- centers + gap/2
 sell_xmax <- centers + gap/2 + w
 
 orders_ylim <- c(0, max(c(buys_disp, sells_disp)) * 1.15)
+price_ylim  <- range(S)
 
 ## ----------------------------
 ## Time labels: 09:00–17:00 every 30min
@@ -155,6 +160,9 @@ text(x_pred, y_last, labels = "?", pos = 4,
      col = "red", cex = 1.5, font = 2)
 ## 4) Legend
 legend("topleft",
+       horiz = TRUE,
+       inset = c(0.3, -0.1),   # <-- moves legend upward above plot
+       xpd = TRUE,            # allow drawing outside plot region
        legend = c("Price", "Buy orders", "Sell orders"),
        col    = c("blue", rgb(0, 0.6, 0, 0.6), rgb(0.8, 0, 0, 0.6)),
        lwd    = c(2, NA, NA, 1),
