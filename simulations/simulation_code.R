@@ -14,7 +14,7 @@ lambda <- 8 # order arrival rate per period
 alpha <- 1 # fraction of informed traders
 
 # set seed for reproducibility
-seed <-444
+seed <-448
 set.seed(seed) 
 
 # initialize price vector
@@ -98,8 +98,7 @@ if (!dir.exists("plots")) {
 
 fname <- sprintf("plots/pricesimulation_seed_%d_alpha_%d.png", seed, as.integer(100*alpha))
 
-png(fname,
-    width = 1800, height = 800, res = 150)
+
 
 par(mar = c(4, 4, 4, 4), mgp = c(2.2, 0.6, 0))
 
@@ -171,4 +170,6 @@ legend("topleft",
        lty    = c(1, NA, NA, 2),
        bty    = "n")
 
+dev.copy(png, fname,
+             width = 1800, height = 800, res = 150)
 dev.off()
