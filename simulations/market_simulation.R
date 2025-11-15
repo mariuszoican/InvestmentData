@@ -3,6 +3,10 @@
 # Simulate price and order flow variables
 # -----------------------------------
 
+library(here)
+library(rstudioapi)
+setwd(dirname(getActiveDocumentContext()$path))
+
 marketsim <- function(
     N         = 16,     # number of half-hour intervals between 09:00 and 17:00
     mu        = 0.06,   # expected return
@@ -13,7 +17,7 @@ marketsim <- function(
     informative = 1,    # 1: plot r_pred, 0: plot iid r
     plot      = TRUE,
     save_png  = FALSE,
-    outdir    = "plots"
+    outdir    = "../plots"
 ) {
   if (!is.null(seed)) set.seed(seed)
   if (N < 2) stop("N must be >= 2")
@@ -44,6 +48,11 @@ marketsim <- function(
   
   ret_top <- if (informative == 1) r_pred else r
   
+  ## --- NEW: percentage versions used only for plotting ---  # <<<
+  ret_top_pct <- 100 * ret_top                              # <<<
+  mu_pct      <- 100 * mu                                   # <<<
+  imb_pct     <- 100 * imb                                  # <<<
+  
   ## ----------------------------
   ## 2) Geometry for imbalance bars
   ## ----------------------------
@@ -53,10 +62,10 @@ marketsim <- function(
   bar_xmin <- centers - w/2
   bar_xmax <- centers + w/2
   
-  orders_ylim <- range(imb) * 1.15
+  orders_ylim <- range(imb_pct) * 1.15
   if (diff(orders_ylim) == 0) orders_ylim <- orders_ylim + c(-0.01, 0.01)
   
-  price_ylim  <- range(c(ret_top, mu)) * 1.1
+  price_ylim  <- range(c(ret_top_pct, mu_pct)) * 1.1
   
   ## ----------------------------
   ## 3) Time labels: 09:00–17:00 every 30min
@@ -85,7 +94,7 @@ marketsim <- function(
          type = "n",
          xlab = "Time", ylab = "Return",
          xlim = c(0, N + 1), ylim = price_ylim,
-         xaxs = "i", xaxt = "n", yaxt = "s")
+         xaxs = "i", xaxt = "n", yaxt = "s", las=2)
     
     usr  <- par("usr")
     ymin <- usr[3]
@@ -101,26 +110,26 @@ marketsim <- function(
     abline(v = 0:(N + 1), col = "gray85", lty = "dotted")
     
     # return line
-    lines(price_x, ret_top, type = "o", lwd = 2, col = "blue")
+    lines(price_x, ret_top_pct, type = "o", lwd = 2, col = "blue")
     
     # horizontal line at mu
-    abline(h = mu, col = "red", lty = 3, lwd = 1.5)
+    abline(h = mu_pct, col = "red", lty = 3, lwd = 1.5)
     
     # prediction dot at 17:00 (N+0.5)
     x_last <- tail(price_x, 1)
-    y_last <- tail(ret_top, 1)
+    y_last_pct <- tail(ret_top_pct, 1)
     x_pred <- N + 0.5
     
-    segments(x_last, y_last, x_pred, y_last,
+    segments(x_last, y_last_pct, x_pred, y_last_pct,
              lty = 2, col = "red")
     
     # fuzzy halo + solid core + ?
-    points(x_pred, y_last, pch = 16, col = rgb(1, 0, 0, 0.15), cex = 4)
-    points(x_pred, y_last, pch = 16, col = rgb(1, 0, 0, 0.25), cex = 2.8)
-    points(x_pred, y_last, pch = 16, col = rgb(1, 0, 0, 0.35), cex = 1.8)
-    points(x_pred, y_last, pch = 16, col = "red",                 cex = 1.3)
-    text(x_pred, y_last, labels = "?", pos = 4,
-         col = "red", cex = 1.5, font = 2)
+    points(x_pred, y_last_pct, pch = 16, col = rgb(1, 0, 0, 0.15), cex = 4)
+    points(x_pred, y_last_pct, pch = 16, col = rgb(1, 0, 0, 0.25), cex = 2.8)
+    points(x_pred, y_last_pct, pch = 16, col = rgb(1, 0, 0, 0.35), cex = 1.8)
+    points(x_pred, y_last_pct, pch = 16, col = "red",                 cex = 1.3)
+    # text(x_pred, y_last_pct, labels = "?", pos = 4,                   # <<<
+    #      col = "red", cex = 1.5, font = 2)
     
     legend("top",
            horiz = TRUE,
@@ -128,8 +137,8 @@ marketsim <- function(
            xpd   = TRUE,
            legend = c(
              if (informative == 1) "Stock return" else "Stock return",
-             "Positive order imbalance",
-             "Negative order imbalance"
+             "Buying pressure",
+             "Selling pressure"
            ),
            col    = c(
              "blue",
@@ -142,8 +151,8 @@ marketsim <- function(
            lty    = c(1, NA, NA),
            bty    = "n")
     
-    axis(1, at = label_pos, labels = time_labels,
-         cex.axis = 0.9, las = 1)
+    # axis(1, at = label_pos, labels = time_labels,
+    #      cex.axis = 0.9, las = 1)
     
     ## ------------------------------
     ## BOTTOM PANEL: single imbalance
@@ -152,7 +161,7 @@ marketsim <- function(
     
     plot(NA, xlim = c(0, N + 1), ylim = orders_ylim,
          xaxs = "i", yaxs = "i",
-         xlab = "Time", ylab = "Order imbalance",
+         xlab = "Time", ylab = "Buy/sell pressure (%)",
          axes = FALSE)
     
     for (t in 1:(N + 1)) {
@@ -167,19 +176,18 @@ marketsim <- function(
     
     # single bar per interval: green if positive, red if negative
     for (i in 1:N) {
-      if (imb[i] > 0) {
-        rect(bar_xmin[i], 0, bar_xmax[i], imb[i],
+      if (imb_pct[i] > 0) {                                 # <<< use imb_pct
+        rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
              col = rgb(0, 0.6, 0, 0.6), border = NA)
-      } else if (imb[i] < 0) {
-        rect(bar_xmin[i], 0, bar_xmax[i], imb[i],
+      } else if (imb_pct[i] < 0) {
+        rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
              col = rgb(0.8, 0, 0, 0.6), border = NA)
       }
-      # if exactly zero, draw nothing
     }
     
     axis(1, at = label_pos, labels = time_labels,
-         cex.axis = 0.9, las = 1)
-    axis(2, las = 1)
+         cex.axis = 1, las = 1)
+    axis(2, las = 2)
   }
   
   ## ----------------------------
@@ -223,10 +231,10 @@ res <- marketsim(
   N = 16,
   mu = 0.06,
   sigma = 0.09,
-  sigma_imb = 0.089,
+  sigma_imb = 0.06,
   seed = 404,
   informative = 1,  # or 1 for r_pred
   plot = TRUE,
   save_png = TRUE,
-  outdir = "plots"
+  outdir = "../plots"
 )
