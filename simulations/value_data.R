@@ -9,10 +9,10 @@ gamma<-24 # risk aversion
 expected_crra_utility <- function(w0,
                                   mu, sigma,
                                   gamma, n_sim = 1e6) {
-  # risky return ~ Normal(mu, sigma)
+  # generate stock return
   r <- rnorm(n_sim, mean = mu, sd = sigma)
-  
-  alpha <- min(1,max(mu/(gamma*sigma^2),0)) # optimal investment
+  # optimal investment: no short-selling, no leverage
+  alpha <- min(1,max(mu/(gamma*sigma^2),0)) 
   # final wealth
   w1 <- w0 * (1 + alpha * r)
   
@@ -24,6 +24,7 @@ expected_crra_utility <- function(w0,
   } else {
     util <- (w1^(1 - gamma)) / (1 - gamma)
     eu<-mean(util)
+    # certainty equivalent
     ce <- ((1 - gamma) * eu)^(1 / (1 - gamma))
   }
   
@@ -31,23 +32,28 @@ expected_crra_utility <- function(w0,
 }
 
 
-
+# function to get the value of data
 value_data <- function(w0, mu, sigma_imb, sigma, gamma,
                               N = 50000, inner = 5000) {
   
+  # compute the baseline (uninformative benchmark)
   uninformative <- expected_crra_utility(w0,mu,sigma,gamma)
   
+  # residual volatility after observing imbalance
   sigma_eps <- sqrt(sigma^2 - sigma_imb^2)
   
-  # Draw imbalance
+  # Draw imbalance 
   imbalance <- rnorm(N, 0, sigma_imb)
+  
+  # new mean (\mu+observed imbalance)
   mu_vec <- mu + imbalance
   
-  # Preallocate
+  # Pre-allocate memory
   CE  <- numeric(N)
   EU  <- numeric(N)
   Alp <- numeric(N)
   
+  # run simulations for different observed imbalances  
   for (i in seq_len(N)) {
     res <- expected_crra_utility(
       w0    = w0,
@@ -62,6 +68,7 @@ value_data <- function(w0, mu, sigma_imb, sigma, gamma,
     Alp[i] <- res$alpha
   }
   
+  # compute the value of data
   value_data<-mean(CE)-uninformative$certequiv
   
   list(
@@ -79,6 +86,9 @@ value_data <- function(w0, mu, sigma_imb, sigma, gamma,
 }
 
 data<-value_data(w0, mu, sigma_imb, sigma, gamma)
+
+#### Plot of data value for different risk aversion levels
+#### -----------------------------------------------------
 
 gammas <- 10:25
 value_vec <- numeric(length(gammas))
