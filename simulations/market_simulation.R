@@ -231,7 +231,7 @@ res <- marketsim(
   N = 16,
   mu = 0.06,
   sigma = 0.09,
-  sigma_imb = 0.06,
+  sigma_imb = 0.08999,
   seed = 404,
   informative = 1,  # or 1 for r_pred
   plot = TRUE,
