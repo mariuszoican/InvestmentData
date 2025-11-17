@@ -6,12 +6,13 @@
 library(here)
 library(rstudioapi)
 setwd(dirname(getActiveDocumentContext()$path))
+source("config.R")
 
 marketsim <- function(
-    N         = 16,     # number of half-hour intervals between 09:00 and 17:00
-    mu        = 0.06,   # expected return
-    sigma     = 0.09,   # std dev of baseline returns
-    sigma_imb = 0.05,   # std dev of imbalance (IID)
+    N,     # number of half-hour intervals between 09:00 and 17:00
+    mu,   # expected return
+    sigma,   # std dev of baseline returns
+    sigma_imb,   # std dev of imbalance (IID)
     match_var = TRUE,   # match Var(r_pred) = Var(r)
     seed      = NULL,
     informative = 1,    # 1: plot r_pred, 0: plot iid r
@@ -92,7 +93,7 @@ marketsim <- function(
     
     plot(price_x, ret_top,
          type = "n",
-         xlab = "Time", ylab = "Return",
+         xlab = "Time", ylab = "Return (%)",
          xlim = c(0, N + 1), ylim = price_ylim,
          xaxs = "i", xaxt = "n", yaxt = "s", las=2)
     
@@ -228,10 +229,10 @@ marketsim <- function(
   ))
 }
 res <- marketsim(
-  N = 16,
-  mu = 0.06,
-  sigma = 0.09,
-  sigma_imb = 0.08999,
+  N = config$N_plot,
+  mu = config$mu,
+  sigma = config$sigma,
+  sigma_imb = config$sigma_imb,
   seed = 404,
   informative = 1,  # or 1 for r_pred
   plot = TRUE,

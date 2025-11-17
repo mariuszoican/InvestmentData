@@ -3,15 +3,16 @@ library(rstudioapi)
 setwd(dirname(getActiveDocumentContext()$path))
 
 source("market_simulation.R")
+source("config.R")
 
 n_rep <- 10000
 
 
 sim_uninform <- marketsim(
   N = n_rep,
-  mu = 0.06,
-  sigma = 0.09,
-  sigma_imb = 0.06,
+  mu = config$mu,
+  sigma = config$sigma,
+  sigma_imb = config$sigma_imb,
   seed = sample.int(1e9, 1),
   informative = 0,  # or 1 for r_pred
   plot = FALSE,
@@ -20,9 +21,9 @@ sim_uninform <- marketsim(
 
 sim_inform <- marketsim(
   N = n_rep,
-  mu = 0.06,
-  sigma = 0.09,
-  sigma_imb = 0.06,
+  mu = config$mu,
+  sigma = config$sigma,
+  sigma_imb = config$sigma_imb,
   seed = sample.int(1e9, 1),
   informative = 1,  # or 1 for r_pred
   plot = FALSE,
