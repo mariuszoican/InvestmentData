@@ -98,8 +98,7 @@ value_data <- function(w0,
 
 data <- value_data(w0, mu, sigma_imb, sigma, gamma)
 
-#### Plot of data value for different risk aversion levels
-#### -----------------------------------------------------
+
 
 gammas <- 10:25
 value_vec <- numeric(length(gammas))
@@ -122,49 +121,139 @@ for (j in seq_along(gammas)) {
   value_vec[j] <- out$value_data
 }
 
-# Plot
-plot(
-  gammas,
-  value_vec,
-  type = "b",
-  pch = 19,
-  col = "blue",
-  xlab = "Risk aversion γ",
-  ylab = "Value of data (certainty equivalent gain)",
-  main = "Information Value vs. Risk Aversion"
+#### Plot of data value for different risk aversion levels
+#### -----------------------------------------------------
+
+# Needed packages
+library(ggplot2)
+library(patchwork)   # install.packages("patchwork") if needed
+library(latex2exp)
+
+# ---- 1) Data frames ----
+df_gamma <- data.frame(
+  gamma = gammas,
+  value = value_vec
 )
 
-df <- data.frame(CE = data$CE)
+df_ce <- data.frame(
+  CE = data$CE
+)
 
-ggplot(df, aes(x = CE)) +
-  geom_histogram(aes(y = ..density..),
-                 bins = 60,
-                 fill = "#4C72B0", color = "white", alpha = 0.6) +
-  geom_density(color = "black", linewidth = 1.2) +
-  geom_vline(xintercept = mean(df$CE), color = "red", linetype = "dotted", linewidth = 1) +
-  geom_vline(xintercept = data$CE_uninformed, color = "darkblue", linetype = "dashed", linewidth = 1) +
-  annotate("text", x = mean(df$CE)+5, y = 0.075, label = "Informative rounds", vjust = -1, color = "red") +
-  annotate("text", x = median(data$CE_uninformed)+5.5, y = 0.1, label = "Uninformative rounds", vjust = 1.5, color = "darkblue") +
-  theme_minimal(base_size = 16) +
+df_alpha <- data.frame(
+  alpha = data$alpha
+)
+
+ce_mean    <- mean(df_ce$CE)
+ce_uninf   <- data$CE_uninformed
+
+alpha_mean  <- mean(df_alpha$alpha)
+alpha_median  <- median(df_alpha$alpha)
+alpha_uninf <- data$alpha_uninformed
+
+# ---- 2) Top-left: distribution of alpha ----
+p_alpha <- ggplot(df_alpha, aes(x = alpha)) +
+  # geom_histogram(aes(y = ..density..),
+  #                bins = 60,
+  #                fill = "#4C72B0", color = "white", alpha = 0.6) +
+  geom_density(linewidth = 1.2) +
+  geom_vline(xintercept = alpha_mean,
+             color = "darkred", linetype = "dotted", linewidth = 0.5) +
+  geom_vline(xintercept = alpha_uninf,
+             color = "darkblue", linetype = "dashed", linewidth = 0.5) +
+  annotate("text",
+           x = alpha_mean-0.11, y = Inf,
+           label = "predictable",
+           vjust = 2, color = "darkred", size = 5) +
+  annotate("text",
+           x = alpha_uninf-0.1, y = Inf,
+           label = "baseline",
+           vjust = 2, color = "darkblue", size = 5) +
+  theme_classic(base_size = 14) +
+  theme(    panel.grid.major = element_blank(),    # <<< no grids
+            panel.grid.minor = element_blank()
+  ) +
   labs(
-    x = "Certainty equivalent",
-    y = "Density"
+    x = TeX("Optimal share in risky asset $\\alpha_p^*$"),
+    y = "Density",
+    title = "(A) Distribution of optimal investment share"
   )
 
 
-dfalpha <- data.frame(alpha = data$alpha)
+# ---- 3) Top-right: distribution of certainty equivalents ----
 
-ggplot(dfalpha, aes(x = alpha)) +
-  geom_histogram(aes(y = ..density..),
-                 bins = 60,
-                 fill = "#4C72B0", color = "white", alpha = 0.6) +
-  geom_density(color = "black", linewidth = 1.2) +
-  geom_vline(xintercept = mean(df$alpha), color = "red", linetype = "dotted", linewidth = 1) +
-  geom_vline(xintercept = data$alpha_uninformed, color = "darkblue", linetype = "dashed", linewidth = 1) +
-  annotate("text", x = mean(df$alpha), y = 0.075, label = "Informative rounds", vjust = -1, color = "red") +
-  annotate("text", x = median(data$alpha_uninformed), y = 0.1, label = "Uninformative rounds", vjust = 1.5, color = "darkblue") +
-  theme_minimal(base_size = 16) +
+vlines_ce <- data.frame(
+  x = c(ce_mean, ce_uninf),
+  type = c("Informative", "Uninformative")
+)
+
+p_ce <- ggplot(df_ce, aes(x = CE)) +
+  # geom_histogram(aes(y = ..density..),
+  #                bins = 60,
+  #                fill = "#4C72B0", color = "white", alpha = 0.6) +
+  geom_density(linewidth = 1.2) +
+  geom_vline(xintercept = ce_mean,
+             color = "darkred", linetype = "dotted", linewidth = 0.5) +
+  geom_vline(xintercept = ce_uninf,
+             color = "darkblue", linetype = "dashed", linewidth = 0.5) +
+  annotate("text",
+           x = ce_mean+5, y = 0.08,
+           label = "predictable",
+           vjust = 2, color = "darkred", size = 5) +
+  annotate("text",
+           x = ce_uninf+4, y = Inf,
+           label = "baseline",
+           vjust = 2, color = "darkblue", size = 5) +
+  theme_classic(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),    # <<< no grids
+    panel.grid.minor = element_blank(),
+    legend.position      = c(0.80, 0.82),          # inside the plot
+    legend.justification = c(0.5, 0.5),
+    legend.direction     = "horizontal",           # legend items arranged horizontally
+    legend.background    = element_rect(
+      fill  = scales::alpha("white", 0.65),
+      color = NA
+    ),
+    legend.key = element_rect(fill = NA)
+  ) +
   labs(
-    x = "Certainty equivalent",
-    y = "Density"
+    x = "Certainty equivalent in predictable round",
+    y = "Density",
+    title = "(B) Distribution of certainty equivalents"
   )
+
+
+# ---- 4) Bottom panel: value of data vs risk aversion ----
+p_value <- ggplot(df_gamma, aes(x = gamma, y = value)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  expand_limits(y = 3) +                    # <<< start at zero
+  theme_classic(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),     # <<< no grids
+    panel.grid.minor = element_blank()
+  ) +
+  labs(
+    x = "Risk aversion \u03B3",
+    y = "Certainty equivalent gain",
+    title = "(C) Value of order imbalance data"
+  )
+
+# ---- 5) Combine: top row 2 panels, bottom row spanning both ----
+combined_plot <- (p_alpha | p_ce) / p_value +
+  plot_layout(heights = c(1, 1.1))  # slightly more height for bottom panel
+
+# ---- 6) Save to ../plots as PNG ----
+if (!dir.exists("../plots")) {
+  dir.create("../plots", recursive = TRUE)
+}
+
+print(combined_plot)
+
+ggsave(
+  filename = "../plots/info_value_panels.png",
+  plot     = combined_plot,
+  width    = 16,
+  height   = 9,
+  dpi      = 300
+)

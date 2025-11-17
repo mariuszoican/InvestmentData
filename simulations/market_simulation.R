@@ -233,7 +233,7 @@ res <- marketsim(
   mu = config$mu,
   sigma = config$sigma,
   sigma_imb = config$sigma_imb,
-  seed = 404,
+  seed = 333,
   informative = 1,  # or 1 for r_pred
   plot = TRUE,
   save_png = TRUE,
