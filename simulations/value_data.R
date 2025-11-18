@@ -155,19 +155,19 @@ p_alpha <- ggplot(df_alpha, aes(x = alpha)) +
   # geom_histogram(aes(y = ..density..),
   #                bins = 60,
   #                fill = "#4C72B0", color = "white", alpha = 0.6) +
-  geom_density(linewidth = 1.2) +
+  geom_density(linewidth = 1.2,fill="#69b3a2", alpha=0.6) +
   geom_vline(xintercept = alpha_mean,
              color = "darkred", linetype = "dotted", linewidth = 0.5) +
   geom_vline(xintercept = alpha_uninf,
              color = "darkblue", linetype = "dashed", linewidth = 0.5) +
   annotate("text",
-           x = alpha_mean-0.11, y = Inf,
-           label = "predictable",
-           vjust = 2, color = "darkred", size = 5) +
+           x = alpha_mean-0.01, y = Inf,
+           label = "predictable \nrounds (mean)",
+           vjust = 2,  hjust=1, color = "darkred", size = 4.5) +
   annotate("text",
-           x = alpha_uninf-0.1, y = Inf,
-           label = "baseline",
-           vjust = 2, color = "darkblue", size = 5) +
+           x = alpha_uninf-0.01, y = Inf,
+           label = "baseline \nrounds (mean)",
+           vjust = 2, hjust=1, color = "darkblue", size = 4.5) +
   theme_classic(base_size = 14) +
   theme(    panel.grid.major = element_blank(),    # <<< no grids
             panel.grid.minor = element_blank()
@@ -190,19 +190,19 @@ p_ce <- ggplot(df_ce, aes(x = CE)) +
   # geom_histogram(aes(y = ..density..),
   #                bins = 60,
   #                fill = "#4C72B0", color = "white", alpha = 0.6) +
-  geom_density(linewidth = 1.2) +
+  geom_density(linewidth = 1.2, fill="#69b3a2", alpha=0.6) +
   geom_vline(xintercept = ce_mean,
              color = "darkred", linetype = "dotted", linewidth = 0.5) +
   geom_vline(xintercept = ce_uninf,
              color = "darkblue", linetype = "dashed", linewidth = 0.5) +
   annotate("text",
-           x = ce_mean+5, y = 0.08,
-           label = "predictable",
-           vjust = 2, color = "darkred", size = 5) +
+           x = ce_mean+1, y = 0.11,
+           label = "predictable \nrounds (mean)",
+           vjust = 2, hjust=0, color = "darkred", size = 4.5) +
   annotate("text",
-           x = ce_uninf+4, y = Inf,
-           label = "baseline",
-           vjust = 2, color = "darkblue", size = 5) +
+           x = ce_uninf+1, y = 0.18,
+           label = "baseline \nrounds (mean)",
+           vjust = 2, hjust=0, color = "darkblue", size = 4.5) +
   theme_classic(base_size = 14) +
   theme(
     panel.grid.major = element_blank(),    # <<< no grids
@@ -227,7 +227,7 @@ p_ce <- ggplot(df_ce, aes(x = CE)) +
 p_value <- ggplot(df_gamma, aes(x = gamma, y = value)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
-  expand_limits(y = 3) +                    # <<< start at zero
+  expand_limits(y = 3.25) +                    # <<< start at zero
   theme_classic(base_size = 14) +
   theme(
     panel.grid.major = element_blank(),     # <<< no grids
