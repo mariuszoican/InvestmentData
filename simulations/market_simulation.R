@@ -18,7 +18,8 @@ marketsim <- function(
     informative = 1,    # 1: plot r_pred, 0: plot iid r
     plot      = TRUE,
     save_png  = FALSE,
-    outdir    = "../plots"
+    outdir    = "../plots",
+    save_excel = TRUE   # save next return
 ) {
   if (!is.null(seed)) set.seed(seed)
   if (N < 2) stop("N must be >= 2")
@@ -218,6 +219,32 @@ marketsim <- function(
     }
   }
   
+  ## ----------------------------
+  ## 6) Next stock return + Excel-readable file
+  ## ----------------------------
+  
+  next_return <- if (informative==1) 
+    mu + tail(imb,1) + rnorm(1, mean = 0, sd = sigma_eps) 
+  else 
+    mu + rnorm(1, mean = 0, sd = sigma)
+  
+  excel_file <- NULL
+  if (save_excel) {
+    if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+    excel_file <- file.path(
+      outdir,
+      sprintf("sim_seed-%s_info-%d_return.csv",
+              ifelse(is.null(seed), "NA", as.character(seed)),
+              informative)
+    )
+    
+    next_df <- data.frame(
+      next_return     = 100*next_return
+    )
+    
+    write.csv(next_df, excel_file, row.names = FALSE)
+  }
+  
   invisible(list(
     data = data.frame(
       t      = 1:N,
@@ -225,6 +252,7 @@ marketsim <- function(
       r_pred = r_pred,
       imb    = imb
     ),
+    next_return=100*next_return,
     png_file = png_file
   ))
 }
@@ -233,8 +261,8 @@ res <- marketsim(
   mu = config$mu,
   sigma = config$sigma,
   sigma_imb = config$sigma_imb,
-  seed = 333,
-  informative = 1,  # or 1 for r_pred
+  seed = 20210314,
+  informative = 0,  # or 1 for r_pred
   plot = TRUE,
   save_png = TRUE,
   outdir = "../plots"
