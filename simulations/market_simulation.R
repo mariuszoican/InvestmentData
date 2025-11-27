@@ -256,13 +256,50 @@ marketsim <- function(
     png_file = png_file
   ))
 }
+
+# 8319, 7316, 9479, 
+# 
+# sim_specs <- data.frame(
+#   seed        = c(),
+#   informative = c(1,1,1,1,1,1,0,0,0,0,0,0)
+# )
+# 
+# results <- list()
+# 
+# for (i in seq_len(nrow(sim_specs))) {
+#   s   <- sim_specs$seed[i]
+#   inf <- sim_specs$informative[i]
+#   
+#   cat("Running: seed =", s, "| informative =", inf, "\n")
+#   
+#   results[[i]] <- marketsim(
+#     N           = config$N_plot,
+#     mu          = config$mu,
+#     sigma       = config$sigma,
+#     sigma_imb   = config$sigma_imb,
+#     seed        = s,
+#     informative = inf,
+#     plot        = TRUE,
+#     save_png    = TRUE,
+#     outdir      = "../plots"
+#   )
+# }
+# 
+# 
+# # optional naming
+# names(results) <- paste0(
+#   "seed_", sim_specs$seed,
+#   "_info_", sim_specs$informative
+# )
+
+
 res <- marketsim(
   N = config$N_plot,
   mu = config$mu,
   sigma = config$sigma,
   sigma_imb = config$sigma_imb,
-  seed = 20210314,
-  informative = 0,  # or 1 for r_pred
+  seed = 11377,
+  informative = 1,  # or 1 for r_pred
   plot = TRUE,
   save_png = TRUE,
   outdir = "../plots"
