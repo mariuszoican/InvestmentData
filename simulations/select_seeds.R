@@ -25,7 +25,8 @@ for (s in seeds) {
     informative = 1,
     plot        = FALSE,
     save_png    = FALSE,
-    outdir      = "../plots"
+    outdir      = "../plots",
+    save_excel = FALSE
   )
   
   imb_lag1 <- c(NA, sim$data$imb[-nrow(sim$data)])

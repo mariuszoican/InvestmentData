@@ -18,7 +18,7 @@ marketsim <- function(
     informative = 1,    # 1: plot r_pred, 0: plot iid r
     plot      = TRUE,
     save_png  = FALSE,
-    outdir    = "../plots",
+    outdir    = "../plot_paths",
     save_excel = TRUE   # save next return
 ) {
   if (!is.null(seed)) set.seed(seed)
@@ -259,48 +259,48 @@ marketsim <- function(
 
 # 8319, 7316, 9479, 
 # 
-# sim_specs <- data.frame(
-#   seed        = c(),
-#   informative = c(1,1,1,1,1,1,0,0,0,0,0,0)
-# )
-# 
-# results <- list()
-# 
-# for (i in seq_len(nrow(sim_specs))) {
-#   s   <- sim_specs$seed[i]
-#   inf <- sim_specs$informative[i]
-#   
-#   cat("Running: seed =", s, "| informative =", inf, "\n")
-#   
-#   results[[i]] <- marketsim(
-#     N           = config$N_plot,
-#     mu          = config$mu,
-#     sigma       = config$sigma,
-#     sigma_imb   = config$sigma_imb,
-#     seed        = s,
-#     informative = inf,
-#     plot        = TRUE,
-#     save_png    = TRUE,
-#     outdir      = "../plots"
-#   )
-# }
-# 
-# 
-# # optional naming
-# names(results) <- paste0(
-#   "seed_", sim_specs$seed,
-#   "_info_", sim_specs$informative
-# )
-
-
-res <- marketsim(
-  N = config$N_plot,
-  mu = config$mu,
-  sigma = config$sigma,
-  sigma_imb = config$sigma_imb,
-  seed = 11377,
-  informative = 1,  # or 1 for r_pred
-  plot = TRUE,
-  save_png = TRUE,
-  outdir = "../plots"
+sim_specs <- data.frame(
+  seed        = c(22,33,49,58,60,101,174,190,154,260,320,334,418,429,489,697),
+  informative = c(1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0)
 )
+
+results <- list()
+
+for (i in seq_len(nrow(sim_specs))) {
+  s   <- sim_specs$seed[i]
+  inf <- sim_specs$informative[i]
+
+  cat("Running: seed =", s, "| informative =", inf, "\n")
+
+  results[[i]] <- marketsim(
+    N           = config$N_plot,
+    mu          = config$mu,
+    sigma       = config$sigma,
+    sigma_imb   = config$sigma_imb,
+    seed        = s,
+    informative = inf,
+    plot        = TRUE,
+    save_png    = TRUE,
+    outdir      = "../plot_paths"
+  )
+}
+
+
+# optional naming
+names(results) <- paste0(
+  "seed_", sim_specs$seed,
+  "_info_", sim_specs$informative
+)
+
+
+# res <- marketsim(
+#   N = config$N_plot,
+#   mu = config$mu,
+#   sigma = config$sigma,
+#   sigma_imb = config$sigma_imb,
+#   seed = 11377,
+#   informative = 1,  # or 1 for r_pred
+#   plot = TRUE,
+#   save_png = TRUE,
+#   outdir = "../plots"
+# )
