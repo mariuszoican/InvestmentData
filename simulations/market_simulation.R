@@ -19,7 +19,8 @@ marketsim <- function(
     plot      = TRUE,
     save_png  = FALSE,
     outdir    = "../plot_paths",
-    save_excel = TRUE   # save next return
+    save_excel = TRUE,
+    show_orderflow = TRUE # save next return
 ) {
   if (!is.null(seed)) set.seed(seed)
   if (N < 2) stop("N must be >= 2")
@@ -161,35 +162,46 @@ marketsim <- function(
     ## ------------------------------
     par(mar = c(4, 4, 2, 2), mgp = c(2.2, 0.6, 0))
     
-    plot(NA, xlim = c(0, N + 1), ylim = orders_ylim,
-         xaxs = "i", yaxs = "i",
-         xlab = "Time", ylab = "Buy/sell pressure (%)",
-         axes = FALSE)
-    
-    for (t in 1:(N + 1)) {
-      rect(t - 1, orders_ylim[1],
-           t,     orders_ylim[2],
-           col = ifelse(t %% 2 == 0, gray(0.99), gray(0.9)),
-           border = NA)
-    }
-    
-    abline(v = 0:(N + 1), col = "gray85", lty = "dotted")
-    abline(h = 0, col = "gray60")
-    
-    # single bar per interval: green if positive, red if negative
-    for (i in 1:N) {
-      if (imb_pct[i] > 0) {                                 # <<< use imb_pct
-        rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
-             col = rgb(0, 0.6, 0, 0.6), border = NA)
-      } else if (imb_pct[i] < 0) {
-        rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
-             col = rgb(0.8, 0, 0, 0.6), border = NA)
+    if (show_orderflow) {  
+      plot(NA, xlim = c(0, N + 1), ylim = orders_ylim,
+           xaxs = "i", yaxs = "i",
+           xlab = "Time", ylab = "Buy/sell pressure (%)",
+           axes = FALSE)
+      
+      for (t in 1:(N + 1)) {
+        rect(t - 1, orders_ylim[1],
+             t,     orders_ylim[2],
+             col = ifelse(t %% 2 == 0, gray(0.99), gray(0.9)),
+             border = NA)
       }
+      
+      abline(v = 0:(N + 1), col = "gray85", lty = "dotted")
+      abline(h = 0, col = "gray60")
+      
+      # single bar per interval: green if positive, red if negative
+      for (i in 1:N) {
+        if (imb_pct[i] > 0) {                                 # <<< use imb_pct
+          rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
+               col = rgb(0, 0.6, 0, 0.6), border = NA)
+        } else if (imb_pct[i] < 0) {
+          rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
+               col = rgb(0.8, 0, 0, 0.6), border = NA)
+        }
+      }
+      
+      axis(1, at = label_pos, labels = time_labels,
+           cex.axis = 1, las = 1)
+      axis(2, las = 2) 
+    } else {
+      plot(NA,
+           xlim = c(0, 1), ylim = c(0, 1),
+           xaxs = "i", yaxs = "i",
+           xlab = "", ylab = "",
+           axes = FALSE)
+      text(0.5, 0.5,
+           "You do not have access to order flow data.",
+           cex = 1.3)  
     }
-    
-    axis(1, at = label_pos, labels = time_labels,
-         cex.axis = 1, las = 1)
-    axis(2, las = 2)
   }
   
   ## ----------------------------
@@ -202,11 +214,13 @@ marketsim <- function(
   png_file <- NULL
   if (save_png) {
     if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+    access_suffix <- if (show_orderflow) "access" else "noaccess"   # <<< NEW
     png_file <- file.path(
       outdir,
-      sprintf("sim_seed-%s_info-%d.png",
+      sprintf("sim_seed-%s_info-%d_%s.png",                       # <<< NEW
               ifelse(is.null(seed), "NA", as.character(seed)),
-              informative)
+              informative,
+              access_suffix)                                      # <<< NEW
     )
     
     if (plot) {
@@ -281,6 +295,7 @@ for (i in seq_len(nrow(sim_specs))) {
     informative = inf,
     plot        = TRUE,
     save_png    = TRUE,
+    show_orderflow = FALSE,
     outdir      = "../plot_paths"
   )
 }
