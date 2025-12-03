@@ -154,6 +154,12 @@ marketsim <- function(
            lty    = c(1, NA, NA),
            bty    = "n")
     
+    # <<< NEW: if no orderflow panel, show time axis on TOP panel
+    if (!show_orderflow) {
+      axis(1, at = label_pos, labels = time_labels,
+           cex.axis = 0.9, las = 1)
+    }
+    
     # axis(1, at = label_pos, labels = time_labels,
     #      cex.axis = 0.9, las = 1)
     
