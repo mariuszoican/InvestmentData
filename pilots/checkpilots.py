@@ -27,7 +27,7 @@ data["treated"] = np.where(data["player.condition"] == "treatment", 1, 0)
 # dummy for paid rounds (within treatment)
 data["paid_round"] = np.where(data["player.round_type"] == "paid_data", 1, 0)
 # fill in the active payment column for control group
-data['player.pay_for_data'] = data['player.pay_for_data'].fillna(0)
+data["player.pay_for_data"] = data["player.pay_for_data"].fillna(0)
 
 # rename columns for inclusion in regression
 data = data.rename(
@@ -47,8 +47,8 @@ labels = {
     "belief_informative": "Belief informative data",
     "informative": "Informative data",
     "treated": "Treated",
-    "pay_for_data": "Willing",
-    "paid_round": "Paid",
+    "pay_for_data": "Chose to pay",
+    "paid_round": "Costly data",
     "treated_willing": r"Treated $\times$ Willing",
     "treated_paid": r"Treated $\times$ Paid",
     "round_number": "Round number",
