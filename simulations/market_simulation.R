@@ -55,7 +55,7 @@ marketsim <- function(
   ret_top_pct <- 100 * ret_top                              # <<<
   mu_pct      <- 100 * mu                                   # <<<
   imb_pct     <- 100 * imb                                  # <<<
-  
+
   ## ----------------------------
   ## 2) Geometry for imbalance bars
   ## ----------------------------
@@ -259,7 +259,8 @@ marketsim <- function(
     )
     
     next_df <- data.frame(
-      next_return     = 100*next_return
+      next_return     = 100*next_return,
+      last_imbalance  = 100*tail(imb, 1)
     )
     
     write.csv(next_df, excel_file, row.names = FALSE)
@@ -325,3 +326,35 @@ names(results) <- paste0(
 #   save_png = TRUE,
 #   outdir = "../plots"
 # )
+
+# After the for loop, create consolidated results
+consolidated_results <- data.frame(
+  seed = sim_specs$seed,
+  informative = sim_specs$informative,
+  next_return = numeric(nrow(sim_specs)),
+  last_return = numeric(nrow(sim_specs)),
+  last_imbalance = numeric(nrow(sim_specs))
+)
+
+# Fill in the results
+for (i in seq_len(nrow(sim_specs))) {
+  inf <- sim_specs$informative[i]
+
+  consolidated_results$next_return[i] <- results[[i]]$next_return
+
+  # Get the appropriate last return based on informative setting
+  if (inf == 1) {
+    consolidated_results$last_return[i] <- 100 * tail(results[[i]]$data$r_pred, 1)
+  } else {
+    consolidated_results$last_return[i] <- 100 * tail(results[[i]]$data$r, 1)
+  }
+
+  consolidated_results$last_imbalance[i] <- 100 * tail(results[[i]]$data$imb, 1)
+}
+
+# Save the consolidated CSV
+consolidated_file <- file.path("consolidated_simulation_results.csv")
+write.csv(consolidated_results, consolidated_file, row.names = FALSE)
+
+cat("\nConsolidated results saved to:", consolidated_file, "\n")
+print(consolidated_results)

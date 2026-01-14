@@ -26,6 +26,8 @@ data = data[data["player.round_type"] != "training"]
 data["treated"] = np.where(data["player.condition"] == "treatment", 1, 0)
 # dummy for paid rounds (within treatment)
 data["paid_round"] = np.where(data["player.round_type"] == "paid_data", 1, 0)
+# fill in the active payment column for control group
+data['player.pay_for_data'] = data['player.pay_for_data'].fillna(0)
 
 # rename columns for inclusion in regression
 data = data.rename(
