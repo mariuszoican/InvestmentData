@@ -11,6 +11,7 @@ session_code = ["m5x4bbn3"]  # January 13, Data price = 5
 
 # Read experiment file
 data = pd.read_csv(f"{main_name}.csv")
+meta = pd.read_csv("../simulations/round_metadata.csv")  # load seed and imbalance
 
 ### Basic Filters
 ### --------------
@@ -26,8 +27,12 @@ data = data[data["player.round_type"] != "training"]
 data["treated"] = np.where(data["player.condition"] == "treatment", 1, 0)
 # dummy for paid rounds (within treatment)
 data["paid_round"] = np.where(data["player.round_type"] == "paid_data", 1, 0)
-# fill in the active payment column for control group
-data["player.pay_for_data"] = data["player.pay_for_data"].fillna(0)
+# fill in the active payment column for control group, code as -1.
+data["player.pay_for_data"] = data["player.pay_for_data"].fillna(-1)
+
+# interactions of dummies
+data["treated_paychoice"] = data["treated"] * data["player.pay_for_data"]
+data["treated_payround"] = data["treated"] * data["paid_round"]
 
 # rename columns for inclusion in regression
 data = data.rename(
@@ -42,6 +47,13 @@ data = data.rename(
     }
 )
 
+# add metadata for the given round
+data = data.merge(
+    meta[["round_number", "last_imbalance", "last_return", "next_return"]],
+    on="round_number",
+    how="left",
+)
+
 # variable labels
 labels = {
     "belief_informative": "Belief informative data",
@@ -49,19 +61,21 @@ labels = {
     "treated": "Treated",
     "pay_for_data": "Chose to pay",
     "paid_round": "Costly data",
-    "treated_willing": r"Treated $\times$ Willing",
-    "treated_paid": r"Treated $\times$ Paid",
+    "treated_paychoice": r"Treated $\times$ Choose to pay",
+    "treated_payround": r"Treated $\times$ Paid round",
     "round_number": "Round number",
+    "last_imbalance": "Order imbalance",
+    "last_return": "Lag return",
 }
 
 m1 = pf.feols(
-    "belief_informative ~ treated + treated *pay_for_data + treated *paid_round + informative + round_number",
+    "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number",
     data=data,
     vcov={"CRV3": "participant_code+round_number"},
 )
 
 m2 = pf.feols(
-    "belief_informative ~ treated + treated *pay_for_data + treated *paid_round  + informative",
+    "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance +  informative",
     data=data,
     vcov={"CRV3": "participant_code+round_number"},
 )
