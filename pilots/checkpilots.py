@@ -95,9 +95,9 @@ data = data.rename(
         "player.inner_round_number": "round_number",
         "player.imbalance_was_informative": "informative",
         "player.imbalance_informative": "belief_informative",
+        "player.return_forecast": "return_forecast",
     }
 )
-
 
 # add metadata for the given round
 data = data.merge(
@@ -106,6 +106,26 @@ data = data.merge(
     how="left",
 )
 
+# standardizations
+for col in [
+    "round_number",
+    "age",
+    "fin_quiz",
+    "overconfidence",
+    "risk_aversion",
+    "last_imbalance",
+    "last_return",
+]:
+    data[col] = (data[col] - data[col].mean()) / data[col].std()
+
+# interactions
+data["willing_imbalance"] = (
+    data["treated"] * data["pay_for_data"] * data["last_imbalance"]
+)
+data["paid_imbalance"] = data["treated"] * data["paid_round"] * data["last_imbalance"]
+data["willing_return"] = data["treated"] * data["pay_for_data"] * data["last_return"]
+data["paid_return"] = data["treated"] * data["paid_round"] * data["last_return"]
+
 # variable labels
 labels = {
     "belief_informative": "Belief informative data",
@@ -113,8 +133,14 @@ labels = {
     "treated": "Treated",
     "pay_for_data": "Chose to pay",
     "paid_round": "Costly data",
+    "return_forecast": "Return forecast",
     "treated_paychoice": r"Treated $\times$ Choose to pay",
     "treated_payround": r"Treated $\times$ Paid round",
+    "investment_amount": "Investment amount",
+    "willing_imbalance": r"Treated $\times$ Choose to pay $\times$ Imbalance",
+    "paid_imbalance": r"Treated $\times$ Paid round $\times$ Imbalance",
+    "willing_return": r"Treated $\times$ Choose to pay $\times$ Lag return",
+    "paid_return": r"Treated $\times$ Paid round $\times$ Lag return",
     "round_number": "Round number",
     "last_imbalance": "Order imbalance",
     "last_return": "Lag return",
@@ -124,7 +150,7 @@ labels = {
     "age": "Age",
     "trading_experience": "Trading experience",
     "risk_aversion": "Risk aversion",
-    "self_literacy": "Self assesment",
+    "self_literacy": "Self assessment",
     "overconfidence": "Overconfidence",
 }
 
@@ -133,22 +159,24 @@ controls = (
     "+trading_experience+risk_aversion"
 )
 
-m1 = pf.feols(
+
+### Beliefs that order flow data is informative
+### --------------------------------------------
+h1_1 = pf.feols(
     "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
     + controls,
     data=data,
     vcov={"CRV1": "participant_code+round_number"},
 )
-
-m2 = pf.feols(
+h1_2 = pf.feols(
     "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance +  informative"
     + controls,
     data=data,
     vcov={"CRV1": "participant_code+round_number"},
 )
 
-table = pf.etable(
-    [m1, m2],
+table_h1 = pf.etable(
+    [h1_1, h1_2],
     type="tex",
     signif_code=[0.01, 0.05, 0.1],
     labels=labels,
@@ -156,6 +184,163 @@ table = pf.etable(
     coef_fmt="b \n (p) ",
     notes=" ",
 )
-print(table)
-with open("table_1.tex", "w") as f:
-    f.write(table)
+print(table_h1)
+with open("table_h1.tex", "w") as f:
+    f.write(table_h1)
+
+### Forecast endowment effect
+### --------------------------------------------
+h2_1 = pf.feols(
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance"
+    + controls,
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h2_2 = pf.feols(
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    + controls,
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h2_3 = pf.feols(
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h2_4 = pf.feols(
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    + controls,
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h2_5 = pf.feols(
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    data=data[(data["data_available"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h2_6 = pf.feols(
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    + controls,
+    data=data[(data["data_available"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+
+table_h2 = pf.etable(
+    [h2_1, h2_2, h2_3, h2_4, h2_5, h2_6],
+    type="tex",
+    signif_code=[0.01, 0.05, 0.1],
+    labels=labels,
+    show_se_type=False,
+    model_heads=[
+        "Perceived informative",
+        "Perceived informative",
+        "Perceived useless",
+        "Perceived useless",
+        "Full sample",
+        "Full sample",
+    ],
+    coef_fmt="b \n (p) ",
+    notes=" ",
+)
+print(table_h2)
+with open("table_h2.tex", "w") as f:
+    f.write(table_h2)
+
+### Investment endowment effect
+### --------------------------------------------
+h3_1 = pf.feols(
+    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance"
+    + controls,
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h3_2 = pf.feols(
+    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    + controls,
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h3_3 = pf.feols(
+    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h3_4 = pf.feols(
+    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    + controls,
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h3_5 = pf.feols(
+    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    data=data[(data["data_available"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+h3_6 = pf.feols(
+    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    + controls,
+    data=data[(data["data_available"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+
+table_h3 = pf.etable(
+    [h3_1, h3_2, h3_3, h3_4, h3_5, h3_6],
+    type="tex",
+    signif_code=[0.01, 0.05, 0.1],
+    labels=labels,
+    show_se_type=False,
+    model_heads=[
+        "Perceived informative",
+        "Perceived informative",
+        "Perceived useless",
+        "Perceived useless",
+        "Full sample",
+        "Full sample",
+    ],
+    coef_fmt="b \n (p) ",
+    notes=" ",
+)
+print(table_h3)
+with open("table_h3.tex", "w") as f:
+    f.write(table_h3)
+
+
+### Belief pass-through
+### -------------------
+h4 = pf.feols(
+    "investment_amount ~ treated + treated_paychoice + treated_payround + round_number"
+    + controls
+    + "| return_forecast ~ last_imbalance + last_return",  # IV step
+    data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
+    vcov={"CRV1": "participant_code+round_number"},
+)
+
+
+### Selection
+### --------
+data["risk_aversion2"] = data["risk_aversion"] ** 2
+h7 = pf.feols(
+    "pay_for_data ~ overconfidence + fin_quiz + risk_aversion +  risk_aversion2 + round_number"
+    + controls,
+    data=data[(data["treated"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+
+### Noise overfitting
+### ------------------
+data["forecast_error_abs"] = np.abs(data["return_forecast"] - data["next_return"])
+h9 = pf.feols(
+    "forecast_error_abs ~ treated + treated_paychoice + treated_payround + last_imbalance + round_number"
+    + controls,
+    data=data[(data["informative"] == 0)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
+
+### Learning from data
+### ------------------
+data["forecast_error_abs"] = np.abs(data["return_forecast"] - data["next_return"])
+h10 = pf.feols(
+    "forecast_error_abs ~ fin_quiz * data_available" + controls,
+    data=data[(data["informative"] == 1)],
+    vcov={"CRV3": "participant_code+round_number"},
+)
