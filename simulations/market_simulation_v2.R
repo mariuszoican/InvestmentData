@@ -85,128 +85,101 @@ marketsim <- function(
   ## 4) Plot helper (draw once on current device)
   ## ----------------------------
   draw_plot <- function() {
-    layout(matrix(c(1, 2), nrow = 2),
-           heights = c(1.2, 1))
+    ## Single panel only
+    par(mar = c(4, 4, 4, 4), mgp = c(2.2, 0.6, 0))
 
-    ## ------------------------------
-    ## TOP PANEL: returns
-    ## ------------------------------
-    par(mar = c(1, 4, 4, 2), mgp = c(2.2, 0.6, 0))
+    x_ret <- price_x
+    x_imb <- price_x + 1   # shift imbalance forward by 1 interval (change to +0.5 if you prefer)
 
-    plot(price_x, ret_top,
+    ret_ylim <- c(-25, 60)
+
+    imb_ylim <- range(imb_pct) * 1.15
+    if (diff(imb_ylim) == 0) imb_ylim <- imb_ylim + c(-0.01, 0.01)
+
+    ## Base plot: RETURNS (left axis)
+    plot(x_ret, ret_top_pct,
          type = "n",
          xlab = "Time", ylab = "Return (%)",
-         xlim = c(0, N + 1), ylim = price_ylim,
+         xlim = c(0, N + 1), ylim = ret_ylim,
          xaxs = "i", xaxt = "n", yaxt = "s", las = 2)
 
     usr <- par("usr")
-    ymin <- usr[3]
-    ymax <- usr[4]
+    ymin <- usr[3]; ymax <- usr[4]
 
     # alternating gray bands
     for (t in 1:(N + 1)) {
-      rect(t - 1, ymin,
-           t, ymax,
+      rect(t - 1, ymin, t, ymax,
            col = ifelse(t %% 2 == 0, gray(0.99), gray(0.9)),
            border = NA)
     }
     abline(v = 0:(N + 1), col = "gray85", lty = "dotted")
 
     # return line
-    lines(price_x, ret_top_pct, type = "o", lwd = 2, col = "blue")
-
-    # horizontal line at mu
-    abline(h = mu_pct, col = "red", lty = 3, lwd = 1.5)
+    lines(x_ret, ret_top_pct, type = "o", lwd = 2, col = "blue")
 
     # prediction dot at 17:00 (N+0.5)
-    x_last <- tail(price_x, 1)
+    x_last <- tail(x_ret, 1)
     y_last_pct <- tail(ret_top_pct, 1)
     x_pred <- N + 0.5
 
-    segments(x_last, y_last_pct, x_pred, y_last_pct,
-             lty = 2, col = "red")
-
-    # fuzzy halo + solid core + ?
+    segments(x_last, y_last_pct, x_pred, y_last_pct, lty = 2, col = "red")
     points(x_pred, y_last_pct, pch = 16, col = rgb(1, 0, 0, 0.15), cex = 4)
     points(x_pred, y_last_pct, pch = 16, col = rgb(1, 0, 0, 0.25), cex = 2.8)
     points(x_pred, y_last_pct, pch = 16, col = rgb(1, 0, 0, 0.35), cex = 1.8)
     points(x_pred, y_last_pct, pch = 16, col = "red", cex = 1.3)
-    # text(x_pred, y_last_pct, labels = "?", pos = 4,                   # <<<
-    #      col = "red", cex = 1.5, font = 2)
 
-    legend("top",
-           horiz = TRUE,
-           inset = c(0, -0.2),
-           xpd = TRUE,
-           legend = c(
-             if (informative == 1) "Stock return" else "Stock return",
-             "Buying pressure",
-             "Selling pressure"
-           ),
-           col = c(
-             "blue",
-             rgb(0, 0.6, 0, 0.6),   # green
-             rgb(0.8, 0, 0, 0.6)    # red
-           ),
-           lwd = c(2, NA, NA),
-           pch = c(16, 15, 15),   # 15 = square
-           pt.cex = c(1, 1.6, 1.6),
-           lty = c(1, NA, NA),
-           bty = "n")
+    # time axis
+    axis(1, at = label_pos, labels = time_labels, cex.axis = 1, las = 1)
 
-    # <<< NEW: if no orderflow panel, show time axis on TOP panel
-    if (!show_orderflow) {
-      axis(1, at = label_pos, labels = time_labels,
-           cex.axis = 0.9, las = 1)
-    }
-
-    # axis(1, at = label_pos, labels = time_labels,
-    #      cex.axis = 0.9, las = 1)
-
-    ## ------------------------------
-    ## BOTTOM PANEL: single imbalance
-    ## ------------------------------
-    par(mar = c(4, 4, 2, 2), mgp = c(2.2, 0.6, 0))
-
+    ## Overlay imbalance only if access is allowed
+    ## Overlay imbalance only if access is allowed
     if (show_orderflow) {
-      plot(NA, xlim = c(0, N + 1), ylim = orders_ylim,
-           xaxs = "i", yaxs = "i",
-           xlab = "Time", ylab = "Buy/sell pressure (%)",
-           axes = FALSE)
+      par(new = TRUE)
+      plot(x_imb, imb_pct,
+           type = "l", lwd = 2, col = "red",
+           axes = FALSE, xlab = "", ylab = "",
+           xlim = c(0, N + 1), ylim = imb_ylim,
+           xaxs = "i")
 
-      for (t in 1:(N + 1)) {
-        rect(t - 1, orders_ylim[1],
-             t, orders_ylim[2],
-             col = ifelse(t %% 2 == 0, gray(0.99), gray(0.9)),
-             border = NA)
-      }
+      axis(4, las = 2)
+      mtext("Buy/sell pressure (%)", side = 4, line = 2.5)
 
-      abline(v = 0:(N + 1), col = "gray85", lty = "dotted")
-      abline(h = 0, col = "gray60")
-
-      # single bar per interval: green if positive, red if negative
-      for (i in 1:N) {
-        if (imb_pct[i] > 0) {                                 # <<< use imb_pct
-          rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
-               col = rgb(0, 0.6, 0, 0.6), border = NA)
-        } else if (imb_pct[i] < 0) {
-          rect(bar_xmin[i], 0, bar_xmax[i], imb_pct[i],
-               col = rgb(0.8, 0, 0, 0.6), border = NA)
-        }
-      }
-
-      axis(1, at = label_pos, labels = time_labels,
-           cex.axis = 1, las = 1)
-      axis(2, las = 2)
+      legend("top",
+             horiz = TRUE,
+             inset = c(0, -0.1),
+             xpd = TRUE,
+             bty = "n",
+             legend = c("Stock return", "Buy/sell pressure"),
+             col = c("blue", "red"),
+             lwd = c(2, 2),
+             lty = c(1, 1),
+             pch = c(16, NA))
     } else {
-      plot(NA,
-           xlim = c(0, 1), ylim = c(0, 1),
-           xaxs = "i", yaxs = "i",
-           xlab = "", ylab = "",
-           axes = FALSE)
-      text(0.5, 0.5,
+      ## Boxed message inside the plot area (no overlap with legend)
+      usr <- par("usr")
+      dx <- usr[2] - usr[1]
+      dy <- usr[4] - usr[3]
+
+      x0 <- usr[1] + 0.02 * dx
+      x1 <- usr[1] + 0.62 * dx
+      y1 <- usr[4] - 0.03 * dy
+      y0 <- usr[4] - 0.12 * dy
+
+      rect(x0, y0, x1, y1, col = rgb(1, 1, 1, 0.85), border = "gray40")
+      text((x0 + x1) / 2, (y0 + y1) / 2,
            "You do not have access to order flow data.",
-           cex = 1.3)
+           cex = 1.05, font = 2)
+
+      legend("top",
+             horiz = TRUE,
+             inset = c(0, -0.1),
+             xpd = TRUE,
+             bty = "n",
+             legend = "Stock return",
+             col = "blue",
+             lwd = 2,
+             lty = 1,
+             pch = 16)
     }
   }
 
@@ -304,7 +277,7 @@ for (i in seq_len(nrow(sim_specs))) {
     informative = inf,
     plot = TRUE,
     save_png = TRUE,
-    show_orderflow = TRUE,
+    show_orderflow = FALSE,
     outdir = "../plot_paths"
   )
 }

@@ -103,7 +103,7 @@ data["paid_dummy"] = np.where(
     (data["paid_round"] == 1) & (data["pay_for_data"] == 1), 1, 0
 )
 data["investment_share"] = data["investment_amount"] / np.where(
-    data["paid_dummy"] == 1, 96, 100
+    data["paid_dummy"] == 1, 95, 100
 )
 
 # add metadata for the given round
@@ -171,16 +171,16 @@ controls = (
 ### Beliefs that order flow data is informative
 ### --------------------------------------------
 h1_1 = pf.feols(
-    "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data,
-    vcov={"CRV1": "participant_code+round_number"},
+    vcov={"CRV3": "participant_code+round_number"},
 )
 h1_2 = pf.feols(
-    "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance +  informative"
+    "belief_informative ~ treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative"
     + controls,
     data=data,
-    vcov={"CRV1": "participant_code+round_number"},
+    vcov={"CRV3": "participant_code+round_number"},
 )
 
 table_h1 = pf.etable(
@@ -199,35 +199,35 @@ with open("table_h1.tex", "w") as f:
 ### Forecast endowment effect
 ### --------------------------------------------
 h2_1 = pf.feols(
-    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance"
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return "
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h2_2 = pf.feols(
-    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h2_3 = pf.feols(
-    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return ",
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h2_4 = pf.feols(
-    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h2_5 = pf.feols(
-    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return",
     data=data[(data["data_available"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h2_6 = pf.feols(
-    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "return_forecast ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
@@ -257,35 +257,35 @@ with open("table_h2.tex", "w") as f:
 ### Investment endowment effect
 ### --------------------------------------------
 h3_1 = pf.feols(
-    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return "
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_2 = pf.feols(
-    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_3 = pf.feols(
-    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return",
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_4 = pf.feols(
-    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_5 = pf.feols(
-    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return",
     data=data[(data["data_available"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_6 = pf.feols(
-    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + last_return + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
@@ -338,7 +338,7 @@ h7 = pf.feols(
 ### ------------------
 data["forecast_error_abs"] = np.abs(data["return_forecast"] - data["next_return"])
 h9 = pf.feols(
-    "forecast_error_abs ~ treated + treated_paychoice + treated_payround + last_imbalance + round_number"
+    "forecast_error_abs ~ treated + treated_paychoice + treated_payround + last_imbalance + last_return + round_number"
     + controls,
     data=data[(data["informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
