@@ -99,6 +99,13 @@ data = data.rename(
     }
 )
 
+data["paid_dummy"] = np.where(
+    (data["paid_round"] == 1) & (data["pay_for_data"] == 1), 1, 0
+)
+data["investment_share"] = data["investment_amount"] / np.where(
+    data["paid_dummy"] == 1, 96, 100
+)
+
 # add metadata for the given round
 data = data.merge(
     meta[["round_number", "last_imbalance", "last_return", "next_return"]],
@@ -137,6 +144,7 @@ labels = {
     "treated_paychoice": r"Treated $\times$ Choose to pay",
     "treated_payround": r"Treated $\times$ Paid round",
     "investment_amount": "Investment amount",
+    "investment_share": "Investment share",
     "willing_imbalance": r"Treated $\times$ Choose to pay $\times$ Imbalance",
     "paid_imbalance": r"Treated $\times$ Paid round $\times$ Imbalance",
     "willing_return": r"Treated $\times$ Choose to pay $\times$ Lag return",
@@ -249,35 +257,35 @@ with open("table_h2.tex", "w") as f:
 ### Investment endowment effect
 ### --------------------------------------------
 h3_1 = pf.feols(
-    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_2 = pf.feols(
-    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_3 = pf.feols(
-    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_4 = pf.feols(
-    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 0)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_5 = pf.feols(
-    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance",
     data=data[(data["data_available"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
 h3_6 = pf.feols(
-    "investment_amount ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
+    "investment_share ~ willing_imbalance + paid_imbalance + treated + treated_paychoice + treated_payround + last_imbalance + informative + round_number"
     + controls,
     data=data[(data["data_available"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
@@ -308,7 +316,7 @@ with open("table_h3.tex", "w") as f:
 ### Belief pass-through
 ### -------------------
 h4 = pf.feols(
-    "investment_amount ~ treated + treated_paychoice + treated_payround + round_number"
+    "investment_share ~ treated + treated_paychoice + treated_payround + round_number"
     + controls
     + "| return_forecast ~ last_imbalance + last_return",  # IV step
     data=data[(data["data_available"] == 1) & (data["belief_informative"] == 1)],
@@ -344,3 +352,5 @@ h10 = pf.feols(
     data=data[(data["informative"] == 1)],
     vcov={"CRV3": "participant_code+round_number"},
 )
+
+data.to_csv("processed_data_pilots.csv")
