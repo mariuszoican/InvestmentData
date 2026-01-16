@@ -235,7 +235,12 @@ marketsim <- function(
 
     next_df <- data.frame(
       next_return = 100 * next_return,
-      last_imbalance = 100 * tail(imb, 1)
+      last_imbalance_1 = 100 * imb[N],
+      last_imbalance_2 = 100 * imb[N - 1],
+      last_imbalance_3 = 100 * imb[N - 2],
+      last_return_1 = 100 * ret_top[N],
+      last_return_2 = 100 * ret_top[N - 1],
+      last_return_3 = 100 * ret_top[N - 2]
     )
 
     write.csv(next_df, excel_file, row.names = FALSE)
@@ -249,6 +254,8 @@ marketsim <- function(
       imb = imb
     ),
     next_return = 100 * next_return,
+    last_imbalances = 100 * imb[(N - 2):N],
+    last_returns = 100 * ret_top[(N - 2):N],
     png_file = png_file
   ))
 }
@@ -307,24 +314,23 @@ consolidated_results <- data.frame(
   seed = sim_specs$seed,
   informative = sim_specs$informative,
   next_return = numeric(nrow(sim_specs)),
-  last_return = numeric(nrow(sim_specs)),
-  last_imbalance = numeric(nrow(sim_specs))
+  last_return_1 = numeric(nrow(sim_specs)),
+  last_return_2 = numeric(nrow(sim_specs)),
+  last_return_3 = numeric(nrow(sim_specs)),
+  last_imbalance_1 = numeric(nrow(sim_specs)),
+  last_imbalance_2 = numeric(nrow(sim_specs)),
+  last_imbalance_3 = numeric(nrow(sim_specs))
 )
 
 # Fill in the results
 for (i in seq_len(nrow(sim_specs))) {
-  inf <- sim_specs$informative[i]
-
   consolidated_results$next_return[i] <- results[[i]]$next_return
-
-  # Get the appropriate last return based on informative setting
-  if (inf == 1) {
-    consolidated_results$last_return[i] <- 100 * tail(results[[i]]$data$r_pred, 1)
-  } else {
-    consolidated_results$last_return[i] <- 100 * tail(results[[i]]$data$r, 1)
-  }
-
-  consolidated_results$last_imbalance[i] <- 100 * tail(results[[i]]$data$imb, 1)
+  consolidated_results$last_return_1[i] <- results[[i]]$last_returns[3]
+  consolidated_results$last_return_2[i] <- results[[i]]$last_returns[2]
+  consolidated_results$last_return_3[i] <- results[[i]]$last_returns[1]
+  consolidated_results$last_imbalance_1[i] <- results[[i]]$last_imbalances[3]
+  consolidated_results$last_imbalance_2[i] <- results[[i]]$last_imbalances[2]
+  consolidated_results$last_imbalance_3[i] <- results[[i]]$last_imbalances[1]
 }
 
 # Save the consolidated CSV
