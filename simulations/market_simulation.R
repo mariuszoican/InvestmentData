@@ -62,8 +62,12 @@ marketsim <- function(
   centers <- (1:N) - 0.5        # centers of intervals [t-1,t]
   w <- 0.5                # bar width
 
-  bar_xmin <- centers - w / 2
-  bar_xmax <- centers + w / 2
+  # bar_xmin <- centers - w / 2
+  # bar_xmax <- centers + w / 2
+
+  bar_centers <- (1:N) + 0.5    # shifted one step forward
+  bar_xmin <- bar_centers - w/2
+  bar_xmax <- bar_centers + w/2
 
   orders_ylim <- range(imb_pct) * 1.15
   if (diff(orders_ylim) == 0) orders_ylim <- orders_ylim + c(-0.01, 0.01)
@@ -302,7 +306,7 @@ for (i in seq_len(nrow(sim_specs))) {
     sigma_imb = config$sigma_imb,
     seed = s,
     informative = inf,
-    plot = TRUE,
+    plot = FALSE,
     save_png = TRUE,
     show_orderflow = TRUE,
     outdir = "../plot_paths"
