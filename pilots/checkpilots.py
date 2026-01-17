@@ -10,8 +10,8 @@ pre_name = "intro_2026-01-17"
 # session_code = ["m5x4bbn3"]  # January 13, Data price = 5
 # session_code = ["461q1n1d", "4pnyq9ay", "m5x4bbn3"]
 
-session_code = ["ccfpv55r", "f59wr1o5"]  # Jan 16, new graphs
-# session_code = ["151ug4w3"]  # Jan 17, new graphs and new volatility
+# session_code = ["ccfpv55r", "f59wr1o5"]  # Jan 16, new graphs
+session_code = ["151ug4w3"]  # Jan 17, new graphs and new volatility
 
 # Read experiment file
 data = pd.read_csv(f"{main_name}.csv")
