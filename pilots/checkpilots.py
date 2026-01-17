@@ -22,8 +22,8 @@ pre_exp = pd.read_csv(f"{pre_name}.csv")  # pre experiment
 # Keep only relevant sessions
 data = data[data["session.code"].isin(session_code)]
 # Keep only participants who finished
-# data = data[data["participant._current_page_name"] == "FinalForProlific"]
-data = data[data["participant._max_page_index"] >= 49]
+data = data[data["participant._current_page_name"] == "FinalForProlific"]
+# data = data[data["participant._max_page_index"] >= 49]
 # Drop training sessions
 data = data[data["player.round_type"] != "training"]
 
