@@ -2,14 +2,16 @@ import numpy as np
 import pandas as pd
 import pyfixest as pf
 
-main_name = "main_2026-01-16"
-post_name = "post_exp_2026-01-16"
-pre_name = "intro_2026-01-16"
+main_name = "main_2026-01-17"
+post_name = "post_exp_2026-01-17"
+pre_name = "intro_2026-01-17"
 # session_code="461q1n1d" # January 12, Data price = 4
 # session_code = "4pnyq9ay"  # January 13, Data price = 6
 # session_code = ["m5x4bbn3"]  # January 13, Data price = 5
 # session_code = ["461q1n1d", "4pnyq9ay", "m5x4bbn3"]
-session_code = ["ccfpv55r", "f59wr1o5"]
+
+session_code = ["ccfpv55r", "f59wr1o5"]  # Jan 16, new graphs
+# session_code = ["151ug4w3"]  # Jan 17, new graphs and new volatility
 
 # Read experiment file
 data = pd.read_csv(f"{main_name}.csv")
@@ -22,7 +24,9 @@ pre_exp = pd.read_csv(f"{pre_name}.csv")  # pre experiment
 # Keep only relevant sessions
 data = data[data["session.code"].isin(session_code)]
 # Keep only participants who finished
-data = data[data["participant._current_page_name"] == "FinalForProlific"]
+data = data[
+    data["participant._current_page_name"].isin(["FinalForProlific", "Demographics"])
+]
 # data = data[data["participant._max_page_index"] >= 49]
 # Drop training sessions
 data = data[data["player.round_type"] != "training"]

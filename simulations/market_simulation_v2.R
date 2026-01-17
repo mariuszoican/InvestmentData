@@ -284,7 +284,7 @@ for (i in seq_len(nrow(sim_specs))) {
     informative = inf,
     plot = TRUE,
     save_png = TRUE,
-    show_orderflow = FALSE,
+    show_orderflow = TRUE,
     outdir = "../plot_paths"
   )
 }

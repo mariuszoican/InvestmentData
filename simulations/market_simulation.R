@@ -288,7 +288,7 @@ marketsim <- function(
 #
 sim_specs <- data.frame(
   seed = c(22, 33, 49, 58, 60, 101, 174, 190, 154, 260, 320, 334, 418, 429, 489, 697),
-  informative = c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0)
+  informative = c(1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0)
 )
 
 results <- list()
@@ -308,7 +308,7 @@ for (i in seq_len(nrow(sim_specs))) {
     informative = inf,
     plot = FALSE,
     save_png = TRUE,
-    show_orderflow = TRUE,
+    show_orderflow = FALSE,
     outdir = "../plot_paths"
   )
 }
