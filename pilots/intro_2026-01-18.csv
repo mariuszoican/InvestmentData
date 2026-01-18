@@ -615,9 +615,9 @@
 55,p4s94fcj,622ab357bb3af819f2e5df3b,0,52,52,post_exp,FinalForProlific,2026-01-18 01:36:13.341426,1,,,108.55,55,,0.0,1,treatment,Chrome,138.0.0,Chrome OS,14541.0.0,Other,0,0,0,1,third_option,1,,,,,,,7,8aeypvgw,,,,,0
 56,1u78pas8,5e6af189bdaa1a0b355f63ae,0,52,52,post_exp,FinalForProlific,2026-01-18 01:37:09.323299,1,,,116.82,56,,0.0,1,treatment,Firefox,147.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,8aeypvgw,,,,,0
 57,fwd7tg1a,69150c3790edcc1addc3c30e,0,52,52,post_exp,FinalForProlific,2026-01-18 02:23:57.892266,1,,,116.62,57,,0.0,1,control,Chrome,143.0.0,Mac OS X,10.15.7,Mac,0,0,0,1,third_option,1,,,,,,,9,8aeypvgw,,,,,0
-58,zet6amxu,,0,0,52,,,,0,,,0.0,58,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
-59,y051d37n,,0,0,52,,,,0,,,0.0,59,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
-60,y5032hbo,,0,0,52,,,,0,,,0.0,60,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
+58,zet6amxu,5da74e9437d4210016492810,0,6,52,main,Trade,2026-01-18 03:30:12.830546,1,,,0.0,58,,0.0,1,treatment,Chrome,143.0.0,Chrome OS,14541.0.0,Other,0,0,0,1,third_option,1,,,,,,,0,8aeypvgw,,,,,0
+59,y051d37n,5c8d7182d169ac0017d98627,0,52,52,post_exp,FinalForProlific,2026-01-18 03:56:03.175258,1,,,106.64,59,,0.0,1,treatment,Edge,143.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,2,8aeypvgw,,,,,0
+60,y5032hbo,6089cbd9050f134be06a1d04,0,1,52,intro,Consent,2026-01-18 04:09:19.206210,1,,,0.0,60,,0.0,,treatment,Safari,8.0,Mac OS X,10.10.1,Mac,0,0,0,1,,,,,,,,,,8aeypvgw,,,,,0
 61,ce2kxekr,,0,0,52,,,,0,,,0.0,61,,0.0,,control,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
 62,1f7k78xp,,0,0,52,,,,0,,,0.0,62,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
 63,wg6tba84,,0,0,52,,,,0,,,0.0,63,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
@@ -758,3 +758,4 @@
 198,rx5b8kmu,,0,0,52,,,,0,,,0.0,198,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
 199,1d5j0124,,0,0,52,,,,0,,,0.0,199,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
 200,u0661dkq,,0,0,52,,,,0,,,0.0,200,,0.0,,treatment,,,,,,,,,,,,,,,,,,,8aeypvgw,,,,,0
+1,9z1mxzil,,0,19,52,main,RoundFeedback,2026-01-18 04:16:56.759618,1,,,308.55,1,,0.0,1,control,Edge,143.0.0,Mac OS X,10.15.7,Mac,0,0,0,1,third_option,1,,,,,,,7,klg8kqr5,,,,,1
