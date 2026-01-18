@@ -2,16 +2,17 @@ import numpy as np
 import pandas as pd
 import pyfixest as pf
 
-main_name = "main_2026-01-17"
-post_name = "post_exp_2026-01-17"
-pre_name = "intro_2026-01-17"
+main_name = "main_2026-01-18"
+post_name = "post_exp_2026-01-18"
+pre_name = "intro_2026-01-18"
 # session_code="461q1n1d" # January 12, Data price = 4
 # session_code = "4pnyq9ay"  # January 13, Data price = 6
 # session_code = ["m5x4bbn3"]  # January 13, Data price = 5
 # session_code = ["461q1n1d", "4pnyq9ay", "m5x4bbn3"]
 
 # session_code = ["ccfpv55r", "f59wr1o5"]  # Jan 16, new graphs
-session_code = ["151ug4w3"]  # Jan 17, new graphs and new volatility
+# session_code = ["151ug4w3"]  # Jan 17, new graphs and new volatility
+session_code = ["8aeypvgw"]  # Jan 17, desktop only
 
 # Read experiment file
 data = pd.read_csv(f"{main_name}.csv")
