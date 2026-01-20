@@ -1,0 +1,26 @@
+		(1)
+VARIABLES	LABELS	Choose to pay
+		
+overconfidence	Overconfidence	0.15
+		(1.46)
+fin_quiz	Financial quiz score	0.14
+		(1.66)
+gender_female	Gender (female)	0.06
+		(0.33)
+age	Age	-0.02
+		(-0.32)
+finance_course	Finance course taken	0.13
+		(0.82)
+trading_experience	Trading experience	-0.12
+		(-0.50)
+risk_aversion	Risk tolerance	-0.12
+		(-1.58)
+round_number	Round number	0.04**
+		(2.31)
+Constant	Constant	0.52**
+		(2.49)
+		
+Observations		348
+R-squared		0.13
+Robust t-statistics in parentheses		
+*** p<0.01, ** p<0.05, * p<0.1		
