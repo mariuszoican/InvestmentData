@@ -10,3 +10,7 @@ data = data[data["session.code"].isin(session_code)]
 data = data[data["participant._current_page_name"].isin(["FinalForProlific"])]
 
 data["final_payoff"] = data["player.payoff"] + data["player.payoff_for_quiz"]
+
+payoffs = data[["participant.label", "final_payoff"]]
+rate = 0.03
+payoffs["payoff_gbp"] = payoffs["final_payoff"] * rate
