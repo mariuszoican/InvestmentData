@@ -1,12 +1,37 @@
 library(tidyverse)
 library(lfe)
 library(stargazer)
+library(fixest)
+library(modelsummary)
 library(rstudioapi)
 
 # Load data
 setwd(dirname(getActiveDocumentContext()$path))
 df <- read.csv("../processed_panels.csv")
 
+# Save raw versions before standardizing
+df <- df %>%
+  mutate(
+    round_number_raw = round_number,
+    age_raw = age,
+    fin_quiz_raw = fin_quiz,
+    overconfidence_raw = overconfidence,
+    risk_aversion_raw = risk_aversion,
+    last_imbalance_1_raw = last_imbalance_1,
+    last_return_1_raw = last_return_1,
+    imb_difference_raw = imb_difference,
+    return_difference_raw = return_difference
+  )
+
+# Standardize
+df <- df %>%
+  mutate(
+    across(
+      c(round_number, age, fin_quiz, overconfidence, risk_aversion,
+        last_imbalance_1, last_return_1, imb_difference, return_difference),
+      ~(. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)
+    )
+  )
 
 # Create variables
 df <- df %>%
@@ -24,11 +49,12 @@ df <- df %>%
     paid_uninformative_imbalance = paid_round *
       (1 - belief_informative) *
       last_imbalance_1,
+    paid_imbalance = paid_round * last_imbalance_1,
     belief_informative_imbalance = belief_informative * last_imbalance_1,
     rf_x_paid = return_forecast * paid_round,
     z_x_paid = last_imbalance_1 * paid_round,
     r_x_paid = last_return_1 * paid_round
-  )  %>%
+  ) %>%
   group_by(participant_code) %>%
   mutate(share_correct = mean(correct_belief, na.rm = TRUE)) %>%
   ungroup()
@@ -37,227 +63,404 @@ controls <- c("overconfidence", "fin_quiz", "gender_female", "age",
               "finance_course", "trading_experience", "risk_aversion")
 controls_str <- paste(controls, collapse = " + ")
 
-### Table 1: Beliefs
-### ------------------
+setFixest_dict(c(
+  treated = "Treated",
+  return_forecast = "Return forecast",
+  paid_imbalance = "Paid $\\times$ Imbalance",
+  paid_informative = "Paid $\\times$ Informative",
+  paid_uninformative = "Paid $\\times$ Not informative",
+  last_imbalance_1 = "Last imbalance",
+  pay_choice = "Choose to pay",
+  choice_imbalance = "Choose to pay $\\times$ Imbalance",
+  paid_round = "Paid round",
+  informative = "Informative round",
+  last_return_1 = "Last return",
+  overconfidence = "Overconfidence",
+  fin_quiz = "Financial quiz",
+  rf_x_paid = "Return forecast $\\times$ Paid round",
+  r_x_paid = "Last return $\\times$ Paid round",
+  investment_amount = "Investment amount (E\\$)",
+  investment_share = "Investment share (\\%)",
+  gender_female = "Female",
+  age = "Age",
+  finance_course = "Finance course",
+  trading_experience = "Trading experience",
+  high_education = "College education",
+  risk_aversion = "Risk aversion",
+  participant_code = "Participant",
+  round_number = "Round number",
+  belief_informative = "Belief informative",
+  share_correct = "Share correct predictions"
+))
 
-belief1 <- felm(belief_informative ~ paid_informative +
-  paid_uninformative +
-  treated +
-  informative +
-  pay_choice +
-  last_return_1 +
-  last_imbalance_1 +
-  round_number +
-  overconfidence +
-  fin_quiz +
-  gender_female +
-  age +
-  finance_course +
-  trading_experience +
-  risk_aversion
-  |
-  0 |
-  0 |
-  participant_code + round_number,
-                data = df, exactDOF = TRUE)
 
 # ============================================================
-# Table 1: Beliefs (matches your 5 reghdfe specs)
+# Table 1: Beliefs
 # ============================================================
 
-bel1 <- felm(
+bel1 <- feols(
   as.formula(paste(
-    "belief_informative ~ paid_informative + paid_uninformative + treated + informative + pay_choice +",
-    "last_return_1 + last_imbalance_1 + round_number +", controls_str,
-    "| 0 | 0 | participant_code + round_number"
+    "belief_informative ~ paid_uninformative +",
+    "paid_round + treated + informative +",
+    "pay_choice + round_number +",
+    "last_return_1 + last_imbalance_1 +",
+    controls_str
   )),
-  data = df, exactDOF = TRUE
+  data = subset(df),
+  cluster = ~participant_code + round_number
 )
 
-bel2 <- felm(
-  belief_informative ~ paid_informative + paid_uninformative + treated + informative + pay_choice +
-    last_return_1 + last_imbalance_1 + round_number
-  | 0 | 0 | participant_code + round_number,
-  data = df, exactDOF = TRUE
-)
-
-bel3 <- felm(
-  belief_informative ~ paid_informative + paid_uninformative + treated + informative + pay_choice
-  | 0 | 0 | participant_code + round_number,
-  data = df, exactDOF = TRUE
-)
-
-bel4 <- felm(
+bel2 <- feols(
   as.formula(paste(
-    "belief_informative ~ paid_round + treated + informative + pay_choice +",
-    "last_return_1 + last_imbalance_1 + round_number +", controls_str,
-    "| 0 | 0 | participant_code + round_number"
+    "belief_informative ~ paid_uninformative +",
+    "paid_round + treated + informative +",
+    "pay_choice + round_number +",
+    "last_return_1 + last_imbalance_1"
   )),
-  data = df, exactDOF = TRUE
+  data = subset(df),
+  cluster = ~participant_code + round_number
 )
 
-bel5 <- felm(
-  belief_informative ~ paid_round + treated + informative + pay_choice +
-    last_return_1 + last_imbalance_1 + round_number
-  | 0 | 0 | participant_code + round_number,
-  data = df, exactDOF = TRUE
+bel3 <- feols(
+  as.formula(paste(
+    "belief_informative ~ paid_uninformative +",
+    "paid_round + treated + informative +",
+    "pay_choice + round_number +",
+    "last_return_1 + last_imbalance_1 +",
+    controls_str
+  )),
+  data = subset(df, fin_quiz >= 0),
+  cluster = ~participant_code + round_number
 )
 
-bel_tex <- stargazer(
-  bel1, bel2, bel3, bel4, bel5,
-  title = "Beliefs (FE OLS; Two-way clustered SEs)",
-  type = "latex",
-  report = "vc*t",              # coef + (clustered) SE + t-stat
-  omit.stat = c("LL", "ser", "F"),
-  no.space = TRUE,
-  dep.var.labels = "Belief: informative (0/1)",
-  notes = c("Two-way clustered standard errors (participant and round)"),
-  # Keep/order like outreg2 keep(*), but in a clean consistent order:
+bel4 <- feols(
+  as.formula(paste(
+    "belief_informative ~ paid_uninformative +",
+    "paid_round + treated + informative +",
+    "pay_choice + round_number +",
+    "last_return_1 + last_imbalance_1"
+  )),
+  data = subset(df, fin_quiz >= 0),
+  cluster = ~participant_code + round_number)
+
+bel5 <- feols(
+  as.formula(paste(
+    "belief_informative ~ paid_uninformative +",
+    "paid_round + treated + informative +",
+    "pay_choice + round_number +",
+    "last_return_1 + last_imbalance_1 +",
+    controls_str
+  )),
+  data = subset(df, fin_quiz < 0),
+  cluster = ~participant_code + round_number
+)
+
+bel6 <- feols(
+  as.formula(paste(
+    "belief_informative ~ paid_uninformative +",
+    "paid_round + treated + informative +",
+    "pay_choice + round_number +",
+    "last_return_1 + last_imbalance_1"
+  )),
+  data = subset(df, fin_quiz < 0),
+  cluster = ~participant_code + round_number)
+
+
+bel_tex <- etable(
+  bel1, bel2, bel3, bel4, bel5, bel6,
+  title = "Payment for data and beliefs",
+  tex = TRUE,
+  digits = "r2",
+  digits.stats = "r2",
+  depvar = TRUE,
   order = c(
-    "paid_informative", "paid_uninformative",
-    "paid_round",
-    "treated", "informative", "pay_choice",
-    "last_return_1", "last_imbalance_1", "round_number",
-    controls
-  ),
-  covariate.labels = c(
-    "Paid $\\times$ Informative", "Paid $\\times$ Uninformative",
-    "Paid round",
-    "Treated", "Informative", "Choose to pay",
-    "Last return", "Last imbalance", "Round number",
+    "Paid.*Not informative", "Paid round", "Treated", "Informative round",
+    "Choose to pay", "Round number",
+    "Last return", "Last imbalance",
     "Overconfidence", "Financial quiz", "Female", "Age",
     "Finance course", "Trading experience", "Risk aversion"
-  )
+  ),
+  headers = list("All quiz scores" = 2, "High quiz scores" = 2, "Low quiz scores" = 2),
+  fitstat = c("n", "r2")
 )
-
 writeLines(bel_tex, "../tables/beliefs_table.tex")
 
 
 # ============================================================
-# Table 2: Forecast equation (2 specs)
+# Table 2: Forecast equations
 # ============================================================
 
-for1 <- felm(
+for1 <- feols(
   as.formula(paste(
     "return_forecast ~ treated +",
-    "paid_informative_imbalance +",
-    "belief_informative_imbalance +",
+    "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1 + ",
-    controls_str,
-    "| 0 | 0 | participant_code + round_number"
+    "last_return_1 + last_imbalance_1 +",
+    controls_str
   )),
-  data = df, exactDOF = TRUE
+  data = subset(df, belief_informative == 1),
+  cluster = ~participant_code + round_number
 )
 
-for2 <- felm(
-  return_forecast ~ treated +
-    paid_informative_imbalance +
-    belief_informative_imbalance +
-    pay_choice + choice_imbalance + paid_round +
-    last_return_1 + last_imbalance_1
-  | 0 | 0 | participant_code + round_number,
-  data = df, exactDOF = TRUE
+
+for2 <- feols(
+  as.formula(paste(
+    "return_forecast ~ treated +",
+    "paid_imbalance +",
+    "pay_choice + choice_imbalance +",
+    "paid_round +",
+    "last_return_1 + last_imbalance_1"
+  )),
+  data = subset(df, belief_informative == 1),
+  cluster = ~participant_code + round_number
 )
 
-for_tex <- stargazer(
-  for1, for2,
-  title = "Return Forecasts (FE OLS; Two-way clustered SEs)",
-  type = "latex",
-  report = "vc*t",
-  omit.stat = c("LL", "ser", "F"),
-  no.space = TRUE,
-  dep.var.labels = "Return forecast",
-  notes = c("Two-way clustered standard errors (participant and round)"),
+for3 <- feols(
+  as.formula(paste(
+    "return_forecast ~ treated +",
+    "paid_imbalance +",
+    "pay_choice + choice_imbalance +",
+    "paid_round +",
+    "last_return_1 + last_imbalance_1 +",
+    controls_str
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  cluster = ~participant_code + round_number
+)
+
+
+for4 <- feols(
+  as.formula(paste(
+    "return_forecast ~ treated +",
+    "paid_imbalance +",
+    "pay_choice + choice_imbalance +",
+    "paid_round +",
+    "last_return_1 + last_imbalance_1"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  cluster = ~participant_code + round_number
+)
+
+for5 <- feols(
+  as.formula(paste(
+    "return_forecast ~ treated +",
+    "paid_imbalance +",
+    "pay_choice + choice_imbalance +",
+    "paid_round +",
+    "last_return_1 + last_imbalance_1 +",
+    controls_str
+  )),
+  data = subset(df, belief_informative == 0),
+  cluster = ~participant_code + round_number
+)
+
+
+for6 <- feols(
+  as.formula(paste(
+    "return_forecast ~ treated +",
+    "paid_imbalance +",
+    "pay_choice + choice_imbalance +",
+    "paid_round +",
+    "last_return_1 + last_imbalance_1"
+  )),
+  data = subset(df, belief_informative == 0),
+  cluster = ~participant_code + round_number
+)
+
+for_tex <- etable(
+  for1, for2, for3, for4, for5, for6,
+  title = "Payment for data and return forecasts",
+  tex = TRUE,
+  digits = "r2",
+  digits.stats = "r2",
+  depvar = TRUE,
   order = c(
-    "treated",
-    "paid_informative_imbalance", "belief_informative_imbalance",
-    "pay_choice", "choice_imbalance",
-    "paid_round",
-    "last_return_1", "last_imbalance_1",
-    controls
-  ),
-  covariate.labels = c(
-    "Treated",
-    "Paid $\\times$ Belief informative $\\times$ Imbalance", "Belief informative $\\times$ Imbalance",
-    "Choose to pay", "Choose to pay $\\times$ Imbalance",
+    "Paid.*Imbalance", "Last imbalance", "Treated",
+    "Choose to pay", "Choose to pay.*Imbalance",
     "Paid round",
-    "Last return", "Last imbalance",
+    "Last return",
     "Overconfidence", "Financial quiz", "Female", "Age",
     "Finance course", "Trading experience", "Risk aversion"
-  )
+  ),
+  headers = list(list(
+    "Belief informative" = 4,
+    "Belief uninformative" = 2
+  ), list("All quiz scores" = 2, "High quiz scores" = 2, "All quiz scores" = 2)),
+  fitstat = c("n", "r2")
 )
-
 writeLines(for_tex, "../tables/forecasts_table.tex")
 
-# IV regressions with felm
-# Syntax: y ~ exog | FEs | (endog ~ instruments) | cluster
-
-iv1 <- felm(as.formula(paste("investment_amount~treated+paid_round+pay_choice+round_number+last_return_1+r_x_paid+", paste(controls, collapse = " + "),
-                             "| 0 | (return_forecast | rf_x_paid ~ last_imbalance_1 + z_x_paid) | participant_code+round_number")),
-            data = subset(df, belief_informative == 1), exactDOF = TRUE)
-iv2 <- felm(as.formula(paste("investment_amount~treated+paid_round+pay_choice+round_number+last_return_1+r_x_paid",
-                             "| 0 | (return_forecast | rf_x_paid ~ last_imbalance_1 + z_x_paid) | participant_code+round_number")),
-            data = subset(df, belief_informative == 1), exactDOF = TRUE)
-iv1a <- felm(as.formula(paste("investment_share~treated+paid_round+pay_choice+round_number+last_return_1+r_x_paid+", paste(controls, collapse = " + "),
-                             "| 0 | (return_forecast | rf_x_paid ~ last_imbalance_1 + z_x_paid) | participant_code+round_number")),
-            data = subset(df, belief_informative == 1), exactDOF = TRUE)
-iv2a <- felm(as.formula(paste("investment_share~treated+paid_round+pay_choice+round_number+last_return_1+r_x_paid",
-                             "| 0 | (return_forecast | rf_x_paid ~ last_imbalance_1 + z_x_paid) | participant_code+round_number")),
-            data = subset(df, belief_informative == 1), exactDOF = TRUE)
-iv3 <- felm(as.formula(paste("investment_amount~treated+paid_round+pay_choice+round_number+last_imbalance_1+z_x_paid+", paste(controls, collapse = " + "),
-                             "| 0 | (return_forecast | rf_x_paid ~ last_return_1 + r_x_paid ) | participant_code+round_number")),
-            data = subset(df, belief_informative == 0), exactDOF = TRUE)
-iv4 <- felm(as.formula(paste("investment_amount~treated+paid_round+pay_choice+round_number+last_imbalance_1+z_x_paid",
-                             "| 0 | (return_forecast | rf_x_paid ~ last_return_1 + r_x_paid ) | participant_code+round_number")),
-            data = subset(df, belief_informative == 0), exactDOF = TRUE)
-
-# Output table
-tex_output <- stargazer(iv1, iv2, iv1a, iv2a, iv3, iv4,
-                        title = "Investment and Return Forecasts (IV Estimates)",
-                        dep.var.labels = c("Investment (E\\$)", "Investment (\\%)"),
-                        report = "vc*t",
-                        order = c("return_forecast", "rf_x_paid", "treated", "paid_round", "pay_choice",
-                                  "round_number", "last_return_1", "r_x_paid", "overconfidence", "fin_quiz", "gender_female", "age",
-                                  "finance_course", "trading_experience", "risk_aversion"),
-                        covariate.labels = c("Return forecast", "Return forecast $\\times$ Paid", "Treated", "Paid round",
-                                             "Choose to pay", "Round number", "Last return", "Last return $\\times$ Paid",
-                                             "Overconfidence", "Financial quiz", "Female", "Age",
-                                             "Finance course", "Trading experience", "Risk aversion"),
-                        multicolumn = TRUE,
-                        omit.stat = c("LL", "ser", "F"),
-                        ci = FALSE,
-                        single.row = FALSE,
-                        no.space = TRUE,
-                        notes = c("Two-way clustered standard errors (participant and round)")
-)
-writeLines(tex_output, "../tables/iv_table.tex")
 
 # ============================================================
-# Selection regression: pay_for_data, treated==1
+# Table 3: Pass-through equations (IV)
 # ============================================================
 
-sel1 <- felm(
-  pay_for_data ~ overconfidence + fin_quiz + gender_female + age +
-    finance_course + trading_experience + risk_aversion + round_number
-  | 0 | 0 | participant_code + round_number,
-  data = subset(df, treated == 1), exactDOF = TRUE
+iv1 <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    controls_str,
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+  )),
+  data = subset(df, belief_informative == 1),
+  cluster = ~participant_code + round_number
+)
+iv2 <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid",
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+  )),
+  data = subset(df, belief_informative == 1),
+  cluster = ~participant_code + round_number
+)
+iv3 <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    controls_str,
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  cluster = ~participant_code + round_number
+)
+iv4 <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid",
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  cluster = ~participant_code + round_number
+)
+iv5 <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    controls_str,
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz <= 0)),
+  cluster = ~participant_code + round_number
+)
+iv6 <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid",
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz <= 0)),
+  cluster = ~participant_code + round_number
 )
 
-sel_tex <- stargazer(
-  sel1,
-  title = "Selection into Paying for Data (Treated only; Two-way clustered SEs)",
-  type = "latex",
-  report = "vc*t",
-  omit.stat = c("LL", "ser", "F"),
-  no.space = TRUE,
-  dep.var.labels = "Pay for data (0/1)",
-  notes = c("Sample restricted to treated==1. Two-way clustered standard errors (participant and round)."),
-  order = c("overconfidence", "fin_quiz", "gender_female", "age",
-            "finance_course", "trading_experience", "risk_aversion", "round_number"),
-  covariate.labels = c("Overconfidence", "Financial quiz", "Female", "Age",
-                       "Finance course", "Trading experience", "Risk aversion", "Round number")
+
+iv_tex <- etable(
+  iv1, iv2, iv3, iv4, iv5, iv6,
+  title = "Payment for data and investments",
+  tex = TRUE,
+  digits = "r2",
+  digits.stats = "r2",
+  depvar = TRUE,
+  order = c(
+    "return_forecast", "rf_x_paid", "paid_round", "treated",
+    "pay_choice", "choice_imbalance",
+    "last_return_1", "r_x_paid",
+    "overconfidence", "fin_quiz", "gender_female", "age",
+    "finance_course", "trading_experience", "risk_aversion", "round_number"
+  ),
+  headers = list("All quiz scores" = 2, "High quiz scores" = 2, "Low quiz scores" = 2),
+  fitstat = c("n", "r2")
+)
+writeLines(iv_tex, "../tables/iv_table.tex")
+
+
+# ============================================================
+# Table 4: Selection
+# ============================================================
+
+sel1 <- feols(
+  as.formula(paste(
+    "pay_choice ~ overconfidence + fin_quiz + high_education + gender_female + age +
+     trading_experience + risk_aversion"
+  )),
+  data = subset(df, treated == 1),
+  cluster = ~participant_code + round_number)
+sel2 <- feols(
+  as.formula(paste(
+    "pay_choice ~ overconfidence + fin_quiz + high_education | round_number"
+  )),
+  data = subset(df, treated == 1),
+  cluster = ~participant_code + round_number
+)
+sel3 <- feols(
+  as.formula(paste(
+    "pay_choice ~ overconfidence + fin_quiz + high_education + gender_female + age +
+     trading_experience + risk_aversion | round_number"
+  )),
+  data = subset(df, treated == 1),
+  cluster = ~participant_code + round_number
+)
+sel4 <- feglm(
+  as.formula(paste(
+    "pay_choice ~ overconfidence + fin_quiz + high_education + gender_female + age +
+     trading_experience + risk_aversion"
+  )),
+  data = subset(df, treated == 1),
+  cluster = ~participant_code + round_number,
+  family = binomial(link = "probit")
+)
+sel5 <- feglm(
+  as.formula(paste(
+    "pay_choice ~ overconfidence + fin_quiz + high_education | round_number"
+  )),
+  data = subset(df, treated == 1),
+  cluster = ~participant_code + round_number,
+  family = binomial(link = "probit")
+)
+sel6 <- feglm(
+  as.formula(paste(
+    "pay_choice ~ overconfidence + fin_quiz + high_education + gender_female + age +
+     trading_experience + risk_aversion | round_number"
+  )),
+  data = subset(df, treated == 1),
+  cluster = ~participant_code + round_number,
+  family = binomial(link = "probit")
 )
 
+
+sel_tex <- etable(
+  sel1, sel2, sel3, sel4, sel5, sel6,
+  title = "Determinants of data payment choice",
+  tex = TRUE,
+  digits = "r2",
+  digits.stats = "r2",
+  depvar = TRUE,
+  order = c(
+    "overconfidence", "fin_quiz", "finance_course", "trading_experience", "gender_female", "age",
+    "risk_aversion", "round_number"),
+  # headers = list("All quiz scores" = 2, "High quiz scores" = 2, "Low quiz scores" = 2),
+  fitstat = c("n", "pr2")
+)
 writeLines(sel_tex, "../tables/selection_table.tex")
+
+
+sum_vars <- df %>%
+  mutate(pay_choice = if_else(treated == 1, pay_choice, NA_real_),
+         belief_informative_when_informative = if_else(informative == 1, belief_informative, NA_real_),
+         belief_informative_when_uninformative = if_else(informative == 0, belief_informative, NA_real_)) %>%
+  select(
+    return_forecast, investment_share, belief_informative, belief_informative_when_informative,
+    belief_informative_when_uninformative, pay_choice,
+    overconfidence_raw, fin_quiz_raw, gender_female, age_raw,
+    finance_course, high_education, trading_experience
+  )
+
+stargazer(
+  as.data.frame(sum_vars),
+  type = "latex",
+  title = "Summary Statistics",
+  digits = 2,
+  summary.stat = c("mean", "sd", "p25", "median", "p75", "min", "max"),
+  covariate.labels = c(
+    "Return forecast", "Investment share (\\%)", "Belief informative", "Belief informative | informative",
+    "Belief informative | uninformative ", "Choose to pay",
+    "Overconfidence", "Financial quiz", "Female", "Age",
+    "Finance course", "College education", "Trading experience", "Risk aversion"
+  ),
+  out = "../tables/summary_stats.tex"
+)

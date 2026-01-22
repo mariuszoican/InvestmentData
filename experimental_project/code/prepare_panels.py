@@ -49,6 +49,22 @@ post_exp["age"] = post_exp["player.age"]
 post_exp["trading_experience"] = post_exp["player.trading_experience"]
 post_exp["risk_aversion"] = post_exp["player.hl_switch_point"]
 
+post_exp["high_education"] = np.where(
+    post_exp["player.education"].isin(
+        [
+            "MBA",
+            "PhD",
+            "master",
+            "undergraduate: 1st year",
+            "undergraduate: 2nd year",
+            "undergraduate: 3rd year",
+            "undergraduate: 4th year",
+        ]
+    ),
+    1,
+    0,
+)
+
 pre_exp = pre_exp[
     pre_exp["participant.code"].isin(
         data["participant.code"].drop_duplicates().tolist()
@@ -66,6 +82,7 @@ data = data.merge(
             "age",
             "trading_experience",
             "risk_aversion",
+            "high_education",
         ]
     ],
     on="participant.code",
@@ -120,18 +137,18 @@ data = data.merge(
 data["imb_difference"] = data["last_imbalance_1"] - data["last_imbalance_2"]
 data["return_difference"] = data["last_return_1"] - data["last_return_2"]
 
-# standardizations
-for col in [
-    "round_number",
-    "age",
-    "fin_quiz",
-    "overconfidence",
-    "risk_aversion",
-    "last_imbalance_1",
-    "last_return_1",
-    "imb_difference",
-    "return_difference",
-]:
-    data[col] = (data[col] - data[col].mean()) / data[col].std()
+# # standardizations
+# for col in [
+#     "round_number",
+#     "age",
+#     "fin_quiz",
+#     "overconfidence",
+#     "risk_aversion",
+#     "last_imbalance_1",
+#     "last_return_1",
+#     "imb_difference",
+#     "return_difference",
+# ]:
+#     data[col] = (data[col] - data[col].mean()) / data[col].std()
 
 data.to_csv("../processed_panels.csv")

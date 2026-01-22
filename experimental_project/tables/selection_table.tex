@@ -1,41 +1,38 @@
-
-% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Thu, Jan 22, 2026 - 07:12:44
-\begin{table}[!htbp] \centering 
-  \caption{Selection into Paying for Data (Treated only; Two-way clustered SEs)} 
-  \label{} 
-\begin{tabular}{@{\extracolsep{5pt}}lc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-2} 
-\\[-1.8ex] & Pay for data (0/1) \\ 
-\hline \\[-1.8ex] 
- Overconfidence & 0.042$^{*}$ \\ 
-  & t = 1.957 \\ 
-  Financial quiz & 0.046$^{**}$ \\ 
-  & t = 2.017 \\ 
-  Female & $-$0.016 \\ 
-  & t = $-$0.478 \\ 
-  Age & 0.022 \\ 
-  & t = 1.442 \\ 
-  Finance course & 0.064$^{*}$ \\ 
-  & t = 1.745 \\ 
-  Trading experience & 0.033 \\ 
-  & t = 0.888 \\ 
-  Risk aversion & $-$0.020 \\ 
-  & t = $-$1.333 \\ 
-  Round number & $-$0.007 \\ 
-  & t = $-$0.543 \\ 
-  Constant & 0.531$^{***}$ \\ 
-  & t = 14.484 \\ 
- \hline \\[-1.8ex] 
-Observations & 6,912 \\ 
-R$^{2}$ & 0.027 \\ 
-Adjusted R$^{2}$ & 0.026 \\ 
-\hline 
-\hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
- & \multicolumn{1}{r}{Sample restricted to treated==1. Two-way clustered standard errors (participant and round).} \\ 
-\end{tabular} 
-\end{table} 
+\begin{table}[htbp]
+   \caption{Determinants of data payment choice}
+   \centering
+   \begin{tabular}{lcccccc}
+      \tabularnewline \midrule \midrule
+      Dependent Variable: & \multicolumn{6}{c}{Choose to pay}\\
+      Model:             & (1)          & (2)          & (3)         & (4)         & (5)          & (6)\\  
+                         &  OLS         & OLS          & OLS         & Probit      & Probit       & Probit\\  
+      \midrule
+      \emph{Variables}\\
+      Constant           & 0.55$^{***}$ &              &             & 0.12        &              &   \\   
+                         & (0.05)       &              &             & (0.12)      &              &   \\   
+      Overconfidence     & 0.05$^{**}$  & 0.07$^{***}$ & 0.05$^{**}$ & 0.14$^{**}$ & 0.17$^{***}$ & 0.14$^{**}$\\   
+                         & (0.02)       & (0.02)       & (0.02)      & (0.06)      & (0.05)       & (0.06)\\   
+      Financial quiz     & 0.06$^{**}$  & 0.07$^{***}$ & 0.06$^{**}$ & 0.15$^{**}$ & 0.19$^{***}$ & 0.15$^{**}$\\   
+                         & (0.02)       & (0.02)       & (0.02)      & (0.06)      & (0.05)       & (0.06)\\   
+      College education  & 0.00         & 0.00         & 0.00        & 0.00        & 0.01         & 0.00\\   
+                         & (0.04)       & (0.04)       & (0.04)      & (0.11)      & (0.11)       & (0.11)\\   
+      Female             & -0.01        &              & -0.01       & -0.04       &              & -0.04\\   
+                         & (0.03)       &              & (0.03)      & (0.09)      &              & (0.09)\\   
+      Age                & 0.02         &              & 0.02        & 0.05        &              & 0.05\\   
+                         & (0.02)       &              & (0.02)      & (0.04)      &              & (0.04)\\   
+      Trading experience & 0.04         &              & 0.04        & 0.10        &              & 0.10\\   
+                         & (0.04)       &              & (0.04)      & (0.10)      &              & (0.10)\\   
+      Risk aversion      & -0.02        &              & -0.02       & -0.06       &              & -0.06\\   
+                         & (0.02)       &              & (0.02)      & (0.04)      &              & (0.04)\\   
+      \midrule
+      \emph{Fixed-effects}\\
+      Round number       &              & Yes          & Yes         &             & Yes          & Yes\\  
+      \midrule
+      \emph{Fit statistics}\\
+      Observations       & 6,936        & 6,936        & 6,936       & 6,936       & 6,936        & 6,936\\  
+      Pseudo R$^2$       & 0.02         & 0.02         & 0.02        & 0.02        & 0.02         & 0.02\\  
+      \midrule \midrule
+      \multicolumn{7}{l}{\emph{Clustered (Participant \& Round number) standard-errors in parentheses}}\\
+      \multicolumn{7}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+   \end{tabular}
+\end{table}
