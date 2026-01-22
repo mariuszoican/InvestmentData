@@ -1,6 +1,6 @@
 import pandas as pd
 
-post_name = "post_exp_2026-01-21"
+post_name = "post_exp_2026-01-22"
 session_code = ["tmjewif2"]  # Jan 17, desktop only
 
 data = pd.read_csv(f"../data/{post_name}.csv")  # post experimental data
