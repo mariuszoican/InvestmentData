@@ -28,7 +28,10 @@ df <- df %>%
     rf_x_paid = return_forecast * paid_round,
     z_x_paid = last_imbalance_1 * paid_round,
     r_x_paid = last_return_1 * paid_round
-  )
+  )  %>%
+  group_by(participant_code) %>%
+  mutate(share_correct = mean(correct_belief, na.rm = TRUE)) %>%
+  ungroup()
 
 controls <- c("overconfidence", "fin_quiz", "gender_female", "age",
               "finance_course", "trading_experience", "risk_aversion")
