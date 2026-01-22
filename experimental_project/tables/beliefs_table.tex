@@ -1,0 +1,58 @@
+
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Wed, Jan 21, 2026 - 21:29:50
+\begin{table}[!htbp] \centering 
+  \caption{Beliefs (FE OLS; Two-way clustered SEs)} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{5}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-6} 
+\\[-1.8ex] & Belief: informative (0/1) & \multicolumn{2}{c}{belief\_informative} & paste("belief\_informative \textasciitilde paid\_round + treated + informative + pay\_choice +", "last\_return\_1 + last\_imbalance\_1 + round\_number +", controls\_str, "\textbar  0 \textbar  0 \textbar  participant\_code + round\_number") & belief\_informative \\ 
+\\[-1.8ex] & (1) & (2) & (3) & (4) & (5)\\ 
+\hline \\[-1.8ex] 
+ Paid $\times$ Informative & $-$0.025$^{*}$ & $-$0.025$^{*}$ & $-$0.039$^{***}$ &  &  \\ 
+  & t = $-$1.726 & t = $-$1.748 & t = $-$4.701 &  &  \\ 
+  Paid $\times$ Uninformative & 0.054$^{***}$ & 0.053$^{***}$ & 0.055$^{***}$ &  &  \\ 
+  & t = 8.761 & t = 9.688 & t = 5.107 &  &  \\ 
+  Paid round &  &  &  & 0.024$^{***}$ & 0.023$^{***}$ \\ 
+  &  &  &  & t = 2.816 & t = 2.960 \\ 
+  Treated & $-$0.046$^{**}$ & $-$0.049$^{**}$ & $-$0.045$^{**}$ & $-$0.052$^{**}$ & $-$0.054$^{***}$ \\ 
+  & t = $-$2.276 & t = $-$2.408 & t = $-$2.040 & t = $-$2.561 & t = $-$2.695 \\ 
+  Informative & 0.100$^{***}$ & 0.100$^{***}$ & 0.107$^{***}$ & 0.072$^{***}$ & 0.072$^{***}$ \\ 
+  & t = 9.117 & t = 9.131 & t = 7.324 & t = 6.915 & t = 6.968 \\ 
+  Choose to pay & 0.130$^{***}$ & 0.136$^{***}$ & 0.135$^{***}$ & 0.130$^{***}$ & 0.136$^{***}$ \\ 
+  & t = 7.457 & t = 7.940 & t = 7.967 & t = 7.501 & t = 7.985 \\ 
+  Last return & 0.006 & 0.006$^{*}$ &  & 0.015$^{***}$ & 0.015$^{***}$ \\ 
+  & t = 1.640 & t = 1.718 &  & t = 6.141 & t = 9.181 \\ 
+  Last imbalance & 0.008$^{***}$ & 0.008$^{***}$ &  & 0.012$^{***}$ & 0.012$^{***}$ \\ 
+  & t = 4.551 & t = 5.248 &  & t = 2.773 & t = 2.796 \\ 
+  Round number & $-$0.009$^{***}$ & $-$0.009$^{***}$ &  & $-$0.009$^{**}$ & $-$0.009$^{**}$ \\ 
+  & t = $-$5.280 & t = $-$5.303 &  & t = $-$2.223 & t = $-$2.243 \\ 
+  Overconfidence & 0.025$^{**}$ &  &  & 0.025$^{**}$ &  \\ 
+  & t = 2.358 &  &  & t = 2.344 &  \\ 
+  Financial quiz & 0.014 &  &  & 0.014 &  \\ 
+  & t = 0.891 &  &  & t = 0.883 &  \\ 
+  Female & 0.007 &  &  & 0.007 &  \\ 
+  & t = 0.398 &  &  & t = 0.409 &  \\ 
+  Age & $-$0.003 &  &  & $-$0.003 &  \\ 
+  & t = $-$0.345 &  &  & t = $-$0.328 &  \\ 
+  Finance course & 0.023 &  &  & 0.023 &  \\ 
+  & t = 1.120 &  &  & t = 1.124 &  \\ 
+  Trading experience & $-$0.008 &  &  & $-$0.008 &  \\ 
+  & t = $-$0.426 &  &  & t = $-$0.427 &  \\ 
+  Risk aversion & 0.005 &  &  & 0.005 &  \\ 
+  & t = 0.513 &  &  & t = 0.518 &  \\ 
+  Constant & 0.618$^{***}$ & 0.623$^{***}$ & 0.620$^{***}$ & 0.631$^{***}$ & 0.637$^{***}$ \\ 
+  & t = 27.017 & t = 37.224 & t = 33.291 & t = 26.658 & t = 36.430 \\ 
+ \hline \\[-1.8ex] 
+Observations & 7,127 & 7,127 & 7,127 & 7,127 & 7,127 \\ 
+R$^{2}$ & 0.029 & 0.026 & 0.025 & 0.028 & 0.025 \\ 
+Adjusted R$^{2}$ & 0.027 & 0.025 & 0.024 & 0.026 & 0.024 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{5}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+ & \multicolumn{5}{r}{Two-way clustered standard errors (participant and round)} \\ 
+\end{tabular} 
+\end{table} 

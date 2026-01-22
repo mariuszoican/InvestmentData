@@ -1,56 +1,60 @@
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Wed, Jan 21, 2026 - 16:32:49
+% Date and time: Wed, Jan 21, 2026 - 21:29:51
 \begin{table}[!htbp] \centering 
   \caption{Investment and Return Forecasts (IV Estimates)} 
   \label{} 
-\begin{tabular}{@{\extracolsep{5pt}}lcccc} 
+\begin{tabular}{@{\extracolsep{5pt}}lcccccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
- & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-5} 
-\\[-1.8ex] & Investment (E\$) & Investment (\%) & paste("investment\_amount\textasciitildetreated+paid\_round+pay\_choice+round\_number+last\_return\_1+r\_x\_paid+", paste(controls, collapse = " + "), "\textbar  0 \textbar  (return\_forecast \textbar  rf\_x\_paid \textasciitilde last\_return\_1 + r\_x\_paid) \textbar  participant\_code+round\_number") & paste("investment\_amount\textasciitildetreated+paid\_round+pay\_choice+round\_number+last\_return\_1+r\_x\_paid", "\textbar  0 \textbar  (return\_forecast \textbar  rf\_x\_paid \textasciitilde last\_return\_1 + r\_x\_paid) \textbar  participant\_code+round\_number") \\ 
-\\[-1.8ex] & (1) & (2) & (3) & (4)\\ 
+ & \multicolumn{6}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-7} 
+\\[-1.8ex] & Investment (E\$) & Investment (\%) & paste("investment\_share\textasciitildetreated+paid\_round+pay\_choice+round\_number+last\_return\_1+r\_x\_paid+", paste(controls, collapse = " + "), "\textbar  0 \textbar  (return\_forecast \textbar  rf\_x\_paid \textasciitilde last\_imbalance\_1 + z\_x\_paid) \textbar  participant\_code+round\_number") & paste("investment\_share\textasciitildetreated+paid\_round+pay\_choice+round\_number+last\_return\_1+r\_x\_paid", "\textbar  0 \textbar  (return\_forecast \textbar  rf\_x\_paid \textasciitilde last\_imbalance\_1 + z\_x\_paid) \textbar  participant\_code+round\_number") & paste("investment\_amount\textasciitildetreated+paid\_round+pay\_choice+round\_number+last\_imbalance\_1+z\_x\_paid+", paste(controls, collapse = " + "), "\textbar  0 \textbar  (return\_forecast \textbar  rf\_x\_paid \textasciitilde last\_return\_1 + r\_x\_paid ) \textbar  participant\_code+round\_number") & paste("investment\_amount\textasciitildetreated+paid\_round+pay\_choice+round\_number+last\_imbalance\_1+z\_x\_paid", "\textbar  0 \textbar  (return\_forecast \textbar  rf\_x\_paid \textasciitilde last\_return\_1 + r\_x\_paid ) \textbar  participant\_code+round\_number") \\ 
+\\[-1.8ex] & (1) & (2) & (3) & (4) & (5) & (6)\\ 
 \hline \\[-1.8ex] 
- Return forecast & 2.572$^{***}$ & 2.590$^{***}$ & 3.579$^{***}$ & 3.643$^{***}$ \\ 
-  & t = 20.008 & t = 18.940 & t = 9.989 & t = 16.358 \\ 
-  Return forecast $\times$ Paid & $-$0.483$^{**}$ & $-$0.476$^{*}$ & $-$0.301 & $-$0.261 \\ 
-  & t = $-$2.020 & t = $-$1.811 & t = $-$1.522 & t = $-$1.376 \\ 
-  Treated & $-$4.347 & $-$5.771$^{*}$ & 0.873 & 0.250 \\ 
-  & t = $-$1.349 & t = $-$1.736 & t = 0.214 & t = 0.058 \\ 
-  Paid round & 5.970$^{*}$ & 5.780$^{**}$ &  &  \\ 
-  & t = 1.955 & t = 2.099 &  &  \\ 
-  Choose to pay & 2.595 & 4.506$^{*}$ & 2.605 & 3.057 \\ 
-  & t = 1.179 & t = 1.958 & t = 0.987 & t = 0.995 \\ 
-  Round number & 2.370$^{***}$ & 2.371$^{***}$ & 3.154$^{***}$ & 3.253$^{***}$ \\ 
-  & t = 5.693 & t = 6.957 & t = 5.150 & t = 4.990 \\ 
-  Last return & $-$6.002$^{***}$ & $-$6.047$^{***}$ & $-$10.371$^{***}$ & $-$10.539$^{***}$ \\ 
-  & t = $-$12.918 & t = $-$13.541 & t = $-$9.074 & t = $-$13.671 \\ 
-  Last return $\times$ Paid & 3.103$^{***}$ & 2.679$^{***}$ & 2.502 & 2.950 \\ 
-  & t = 3.748 & t = 3.168 & t = 1.407 & t = 1.538 \\ 
-  Overconfidence & $-$2.416 &  & $-$0.248 &  \\ 
-  & t = $-$1.548 &  & t = $-$0.114 &  \\ 
-  Financial quiz & 4.524$^{***}$ &  & 3.882 &  \\ 
-  & t = 2.934 &  & t = 1.609 &  \\ 
-  Female & $-$9.052$^{***}$ &  & $-$4.935 &  \\ 
-  & t = $-$3.929 &  & t = $-$1.369 &  \\ 
-  Age & $-$0.764 &  & $-$2.797$^{*}$ &  \\ 
-  & t = $-$0.678 &  & t = $-$1.739 &  \\ 
-  Finance course & 1.904 &  & 2.385 &  \\ 
-  & t = 0.705 &  & t = 0.560 &  \\ 
-  Trading experience & 6.201$^{**}$ &  & 3.488 &  \\ 
-  & t = 2.504 &  & t = 0.844 &  \\ 
-  Risk aversion & $-$1.812 &  & $-$5.169$^{***}$ &  \\ 
-  & t = $-$1.421 &  & t = $-$2.895 &  \\ 
-  Constant & 16.381$^{***}$ & 16.395$^{***}$ &  &  \\ 
-  & t = 6.030 & t = 16.046 &  &  \\ 
+ Return forecast & 2.472$^{***}$ & 2.498$^{***}$ & 2.484$^{***}$ & 2.511$^{***}$ & 0.608$^{***}$ & 0.613$^{***}$ \\ 
+  & t = 28.649 & t = 20.687 & t = 29.026 & t = 20.055 & t = 3.775 & t = 3.826 \\ 
+  Return forecast $\times$ Paid & $-$0.418$^{***}$ & $-$0.436$^{***}$ & $-$0.336$^{***}$ & $-$0.355$^{**}$ & 0.103 & 0.187 \\ 
+  & t = $-$4.009 & t = $-$3.069 & t = $-$3.066 & t = $-$2.259 & t = 0.294 & t = 0.538 \\ 
+  Treated & $-$5.242$^{*}$ & $-$6.490$^{**}$ & $-$5.192$^{*}$ & $-$6.478$^{**}$ & $-$0.467 & $-$1.440 \\ 
+  & t = $-$1.695 & t = $-$2.015 & t = $-$1.676 & t = $-$2.008 & t = $-$0.161 & t = $-$0.478 \\ 
+  Paid round & 5.357$^{***}$ & 5.544$^{***}$ & 6.825$^{***}$ & 7.015$^{***}$ & $-$4.116 & $-$5.303 \\ 
+  & t = 3.447 & t = 3.618 & t = 4.452 & t = 4.416 & t = $-$0.953 & t = $-$1.203 \\ 
+  Choose to pay & 2.389 & 4.313$^{*}$ & 2.309 & 4.289$^{*}$ & 2.112 & 3.016 \\ 
+  & t = 1.123 & t = 1.925 & t = 1.084 & t = 1.909 & t = 0.865 & t = 1.153 \\ 
+  Round number & 2.243$^{***}$ & 2.263$^{***}$ & 2.286$^{***}$ & 2.307$^{***}$ & 3.954$^{***}$ & 3.983$^{***}$ \\ 
+  & t = 4.974 & t = 4.284 & t = 4.792 & t = 4.140 & t = 4.952 & t = 5.314 \\ 
+  Last return & $-$5.724$^{***}$ & $-$5.766$^{***}$ & $-$5.769$^{***}$ & $-$5.814$^{***}$ &  &  \\ 
+  & t = $-$13.523 & t = $-$13.365 & t = $-$13.430 & t = $-$14.021 &  &  \\ 
+  Last return $\times$ Paid & 2.879$^{***}$ & 2.508$^{***}$ & 2.832$^{***}$ & 2.454$^{***}$ &  &  \\ 
+  & t = 4.785 & t = 4.088 & t = 4.872 & t = 4.192 &  &  \\ 
+  Overconfidence & $-$2.362 &  & $-$2.409 &  & 3.223$^{*}$ &  \\ 
+  & t = $-$1.565 &  & t = $-$1.568 &  & t = 1.810 &  \\ 
+  Financial quiz & 5.045$^{***}$ &  & 5.156$^{***}$ &  & 4.931$^{***}$ &  \\ 
+  & t = 3.297 &  & t = 3.319 &  & t = 2.644 &  \\ 
+  Female & $-$9.106$^{***}$ &  & $-$9.322$^{***}$ &  & $-$5.901$^{**}$ &  \\ 
+  & t = $-$4.095 &  & t = $-$4.137 &  & t = $-$2.036 &  \\ 
+  Age & $-$1.363 &  & $-$1.353 &  & $-$3.269$^{**}$ &  \\ 
+  & t = $-$1.257 &  & t = $-$1.225 &  & t = $-$2.534 &  \\ 
+  Finance course & 2.303 &  & 2.398 &  & 2.917 &  \\ 
+  & t = 0.906 &  & t = 0.925 &  & t = 0.999 &  \\ 
+  Trading experience & 5.327$^{**}$ &  & 5.451$^{**}$ &  & 1.334 &  \\ 
+  & t = 2.186 &  & t = 2.203 &  & t = 0.438 &  \\ 
+  Risk aversion & $-$1.253 &  & $-$1.276 &  & $-$1.838 &  \\ 
+  & t = $-$0.989 &  & t = $-$0.988 &  & t = $-$1.302 &  \\ 
+  last\_imbalance\_1 &  &  &  &  & 2.383$^{***}$ & 2.466$^{***}$ \\ 
+  &  &  &  &  & t = 3.197 & t = 3.489 \\ 
+  z\_x\_paid &  &  &  &  & $-$2.697$^{***}$ & $-$2.816$^{***}$ \\ 
+  &  &  &  &  & t = $-$3.108 & t = $-$3.369 \\ 
+  Constant & 18.385$^{***}$ & 17.726$^{***}$ & 18.211$^{***}$ & 17.550$^{***}$ & 38.511$^{***}$ & 37.415$^{***}$ \\ 
+  & t = 7.010 & t = 14.729 & t = 6.888 & t = 14.725 & t = 11.165 & t = 13.509 \\ 
  \hline \\[-1.8ex] 
-Observations & 4,810 & 4,810 & 1,869 & 1,869 \\ 
-R$^{2}$ & $-$0.048 & $-$0.140 & $-$0.460 & $-$0.561 \\ 
-Adjusted R$^{2}$ & $-$0.052 & $-$0.142 & $-$0.470 & $-$0.566 \\ 
+Observations & 5,122 & 5,122 & 5,122 & 5,122 & 2,005 & 2,005 \\ 
+R$^{2}$ & $-$0.025 & $-$0.118 & $-$0.024 & $-$0.118 & 0.125 & 0.076 \\ 
+Adjusted R$^{2}$ & $-$0.028 & $-$0.120 & $-$0.027 & $-$0.120 & 0.118 & 0.073 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
- & \multicolumn{4}{r}{Two-way clustered standard errors (participant and round)} \\ 
+\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+ & \multicolumn{6}{r}{Two-way clustered standard errors (participant and round)} \\ 
 \end{tabular} 
 \end{table} 

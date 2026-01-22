@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-main_name = "main_2026-01-21"
-post_name = "post_exp_2026-01-21"
-pre_name = "intro_2026-01-21"
+main_name = "main_2026-01-22"
+post_name = "post_exp_2026-01-22"
+pre_name = "intro_2026-01-22"
 
 session_code = ["tmjewif2"]  # Jan 21 session on Prolific
 
