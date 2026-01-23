@@ -127,11 +127,11 @@ panel["return_forecast_resid"] = (
 )  # add back mean for interpretability
 
 
-gs = gridspec.GridSpec(2, 2)
-sizefigs_L = (20, 14)
+gs = gridspec.GridSpec(1, 3)
+sizefigs_L = (21, 9)
 fig = plt.figure(facecolor="white", figsize=sizefigs_L)
 
-ax = fig.add_subplot(gs[0, :])
+ax = fig.add_subplot(gs[0, 0])
 ax = settings_plot(ax)
 
 
@@ -158,9 +158,9 @@ plt.legend(
     loc="upper left",
     ncol=2,
 )
+plt.ylim(0, 18)
 
-
-ax = fig.add_subplot(gs[1, 0])
+ax = fig.add_subplot(gs[0, 1])
 ax = settings_plot(ax)
 
 sns.barplot(
@@ -185,9 +185,10 @@ plt.legend(
     loc="upper left",
     ncol=2,
 )
+plt.ylim(0, 18)
 ax.set_xticklabels(["No", "Yes"], fontsize=22)
 
-ax = fig.add_subplot(gs[1, 1])
+ax = fig.add_subplot(gs[0, 2])
 ax = settings_plot(ax)
 
 sns.barplot(
@@ -212,8 +213,9 @@ plt.legend(
     ncol=2,
     loc="upper left",
 )
+plt.ylim(0, 18)
 ax.set_xticklabels(["No", "Yes"], fontsize=22)
-plt.tight_layout(pad=2.0)
+plt.tight_layout(pad=3.0)
 # plt.show()
 plt.savefig("../figures/paid_forecasts.eps")
 
