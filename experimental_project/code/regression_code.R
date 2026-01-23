@@ -4,6 +4,10 @@ library(stargazer)
 library(fixest)
 library(modelsummary)
 library(rstudioapi)
+library(ggplot2)
+library(ggfixest)
+library(cowplot)
+library(latex2exp)
 
 # Load data
 setwd(dirname(getActiveDocumentContext()$path))
@@ -52,7 +56,9 @@ df <- df %>%
     paid_imbalance = paid_round * last_imbalance_1,
     belief_informative_imbalance = belief_informative * last_imbalance_1,
     rf_x_paid = return_forecast * paid_round,
+    rf_x_unpaid = return_forecast * (1 - paid_round),
     z_x_paid = last_imbalance_1 * paid_round,
+    z_x_unpaid = last_imbalance_1 * (1 - paid_round),
     r_x_paid = last_return_1 * paid_round
   ) %>%
   group_by(participant_code) %>%
@@ -465,14 +471,132 @@ stargazer(
   out = "../tables/summary_stats.tex"
 )
 
-# Coefficient plot for key variables
-coefplot(
-  list(iv1, iv3, iv5),
-  keep = c("return_forecast", "rf_x_paid"),
-  main = "Effect of Forecasts on Investment (IV)",
-  xlab = "Coefficient",
+# Coefficient plot for the IV regression
+# ---------------------------------------
+
+iv1fig <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    controls_str,
+    "| 0 | rf_x_unpaid + rf_x_paid ~ z_x_unpaid + z_x_paid"
+  )),
+  data = subset(df, belief_informative == 1),
+  cluster = ~participant_code + round_number
+)
+iv3fig <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    controls_str,
+    "| 0 | rf_x_unpaid + rf_x_paid ~ z_x_unpaid + z_x_paid"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  cluster = ~participant_code + round_number
+)
+iv5fig <- feols(
+  as.formula(paste(
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    controls_str,
+    "| 0 | rf_x_unpaid + rf_x_paid ~ z_x_unpaid + z_x_paid"
+  )),
+  data = subset(df, (belief_informative == 1) & (fin_quiz <= 0)),
+  cluster = ~participant_code + round_number
+)
+
+models <- list(
+  "All quiz scores" = iv1fig,
+  "High quiz scores" = iv3fig,
+  "Low quiz scores" = iv5fig
+)
+
+p <- ggcoefplot(
+  models,
+  keep = c("rf_x_unpaid", "rf_x_paid"),
+  vcov = ~participant_code + round_number,
+  multi_style = "facet",          # <-- 3 panels (one per model)
+  geom_style = "errorbar",       # "errorbar" or "pointrange"
   dict = c(
-    return_forecast = "Return forecast",
-    rf_x_paid = "Forecast × Paid round"
+    rf_x_unpaid = "Free round",
+    rf_x_paid = "Paid round"
+  ), pt.size = 4, width = 0.1
+)
+# geom_errorbar(width = 0.15, linewidth = 0.9) +
+# geom_point(size = 2.8)
+
+p1_mod <- p +
+  # 1) no grid
+  theme_classic() +
+  # 2) “bars” (CI whiskers) wider, and tighter vertical spacing between rows
+  theme(
+    panel.spacing = unit(2, "lines"), legend.position = "none",
+    strip.background = element_blank(), strip.placement = "outside", strip.text = element_text(size = 12),
+    axis.text.x = element_text(size = 11), axis.title.y = element_text(size = 12)
+  ) +
+  scale_x_discrete(
+    labels = c(
+      fit_rf_x_unpaid = "Free round",
+      fit_rf_x_paid = "Paid round"
+    )
+  ) +
+  labs(
+    title = "(A) Investment share elasticity to return forecast",
+    y = "Investment share change (%)"
+  ) +
+  scale_color_manual(
+    values = c("All quiz scores" = "#000000", "High quiz scores" = "#0072B2", "Low quiz scores" = "#D55E00"),
+    breaks = c("Low quiz scores", "High quiz scores", "All quiz scores"))
+
+
+models <- rev(models)
+p2 <- ggcoefplot(
+  models,
+  keep = "^Paid round$",              # exact match
+  vcov = ~participant_code + round_number,
+  geom_style = "errorbar", zero = FALSE, pt.size = 4, linewidth = 2
+)
+
+p2_mod <- p2 +
+  labs(
+    x = "Participant group",
+    y = TeX("$\\Delta$ Investment share in paid vs. free rounds"),
+    title = "(B) Investment share level",
+  ) +
+  coord_flip() +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "gray50") +
+  scale_x_discrete(labels = "", expand = expansion(add = 0.4)) +
+  theme_classic() +
+  theme(legend.position = c(0.85, 0.75),  # x, y coordinates (0-1),
+        legend.title = element_blank(), legend.text = element_text(size = 12),
+        axis.text.x = element_text(size = 11), axis.title.y = element_text(size = 12)) +
+  scale_color_manual(
+    values = c("All quiz scores" = "#000000", "High quiz scores" = "#0072B2", "Low quiz scores" = "#D55E00"),
+    breaks = c("Low quiz scores", "High quiz scores", "All quiz scores")) +
+  scale_shape_manual(
+    values = c(
+      "Low quiz scores" = 15,  # square
+      "High quiz scores" = 17,  # triangle
+      "All quiz scores" = 16   # circle
+    ))
+
+
+white_spacer <- ggplot() +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
   )
+
+iv_figure <- plot_grid(
+  p1_mod, white_spacer, p2_mod,
+  ncol = 1,
+  align = "v",
+  axis = "l",
+  rel_heights = c(1.5, 0.1, 1)
+)
+
+ggsave(
+  "../figures/figure_iv_results.png",
+  iv_figure,
+  width = 9,
+  height = 5,
+  dpi = 300
 )
