@@ -364,7 +364,7 @@ iv_tex <- etable(
     "finance_course", "trading_experience", "risk_aversion", "round_number"
   ),
   headers = list("All quiz scores" = 2, "High quiz scores" = 2, "Low quiz scores" = 2),
-  fitstat = c("n", "r2")
+  fitstat = c("n", "ar2")
 )
 writeLines(iv_tex, "../tables/iv_table.tex")
 
@@ -463,4 +463,16 @@ stargazer(
     "Finance course", "College education", "Trading experience", "Risk aversion"
   ),
   out = "../tables/summary_stats.tex"
+)
+
+# Coefficient plot for key variables
+coefplot(
+  list(iv1, iv3, iv5),
+  keep = c("return_forecast", "rf_x_paid"),
+  main = "Effect of Forecasts on Investment (IV)",
+  xlab = "Coefficient",
+  dict = c(
+    return_forecast = "Return forecast",
+    rf_x_paid = "Forecast × Paid round"
+  )
 )
