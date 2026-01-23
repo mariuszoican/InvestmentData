@@ -594,7 +594,7 @@ iv_figure <- plot_grid(
 )
 
 ggsave(
-  "../figures/figure_iv_results.png",
+  "../figures/figure_iv_results.eps",
   iv_figure,
   width = 9,
   height = 5,
