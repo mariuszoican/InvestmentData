@@ -60,7 +60,7 @@ df <- df %>%
     z_x_paid = last_imbalance_1 * paid_round,
     z_x_unpaid = last_imbalance_1 * (1 - paid_round),
     r_x_paid = last_return_1 * paid_round,
-    correct_forecast=15+last_imbalance_1_raw,
+    correct_forecast=15+last_imbalance_1_raw * informative,
     forecast_error = abs(return_forecast-correct_forecast)
   ) %>%
   group_by(participant_code) %>%
@@ -108,73 +108,73 @@ setFixest_dict(c(
 
 for1 <- feols(
   as.formula(paste(
-    "forecast_error ~ treated +",
-    "pay_choice +",
-    "paid_round +",
+    "forecast_error ~ ",
+    "paid_round + treated +",
+    "pay_choice + round_number +",
     "last_return_1 + last_imbalance_1 +",
     controls_str
   )),
-  data = subset(df, (belief_informative == 1)),
+  data = subset(df, informative==0),
   cluster = ~participant_code + round_number
 )
 
 
 for2 <- feols(
   as.formula(paste(
-    "forecast_error ~ treated +",
-    "pay_choice +",
-    "paid_round +",
+    "forecast_error ~ ",
+    "paid_round + treated +",
+    "pay_choice + round_number +",
     "last_return_1 + last_imbalance_1"
   )),
-  data = subset(df, (belief_informative == 1)),
+  data = subset(df, informative==0),
   cluster = ~participant_code + round_number
 )
 
 for3 <- feols(
   as.formula(paste(
-    "forecast_error ~ treated +",
-    "pay_choice +",
-    "paid_round +",
+    "forecast_error ~ ",
+    "paid_round + treated +",
+    "pay_choice + round_number +",
     "last_return_1 + last_imbalance_1 +",
     controls_str
   )),
-  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  data = subset(df, (informative==0) & (fin_quiz > 0)),
   cluster = ~participant_code + round_number
 )
 
 
 for4 <- feols(
   as.formula(paste(
-    "forecast_error ~ treated +",
-    "pay_choice +",
-    "paid_round +",
+    "forecast_error ~ ",
+    "paid_round + treated +",
+    "pay_choice + round_number +",
     "last_return_1 + last_imbalance_1"
   )),
-  data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
+  data = subset(df, (informative==0) & (fin_quiz > 0)),
   cluster = ~participant_code + round_number
 )
 
 for5 <- feols(
   as.formula(paste(
-    "forecast_error ~ treated +",
-    "pay_choice +",
-    "paid_round +",
+    "forecast_error ~ ",
+    "paid_round + treated +",
+    "pay_choice + round_number +",
     "last_return_1 + last_imbalance_1 +",
     controls_str
   )),
-  data = subset(df,(belief_informative == 1) & (fin_quiz <= 0)),
+  data = subset(df, (informative==0) & (fin_quiz <= 0)),
   cluster = ~participant_code + round_number
 )
 
 
 for6 <- feols(
   as.formula(paste(
-    "forecast_error ~ treated +",
-    "pay_choice +",
-    "paid_round +",
+    "forecast_error ~ ",
+    "paid_round + treated +",
+    "pay_choice + round_number +",
     "last_return_1 + last_imbalance_1"
   )),
-  data = subset(df, (belief_informative == 1) & (fin_quiz <= 0)),
+  data = subset(df, (informative==0) & (fin_quiz <= 0)),
   cluster = ~participant_code + round_number
 )
 
@@ -186,9 +186,9 @@ for_tex <- etable(
   digits.stats = "r2",
   depvar = TRUE,
   order = c(
-    "Paid.*Imbalance", "Last imbalance", "Treated",
-    "Choose to pay", "Choose to pay.*Imbalance",
-    "Paid round",
+    "Paid round", "Treated",
+    "Choose to pay",
+    "Last imbalance",
     "Last return",
     "Overconfidence", "Financial quiz", "Female", "Age",
     "Finance course", "Trading experience", "Risk aversion"
