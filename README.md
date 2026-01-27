@@ -15,8 +15,6 @@ investment experiment.
 
 This repository is organized to separate **experimental data and empirical analysis**,
 **theoretical simulations**, and **supporting documentation**.  
-The `clean-share` branch removes pilot data and administrative material, focusing on
-replication and transparency.
 
 ---
 
