@@ -129,7 +129,7 @@ python prepare_panels.py
 ```
 
 **What it does:**
-- Filters to completed session: `tmjewif2` (Jan 21-22, 2026)
+- Filters to completed session
 - Drops training rounds
 - Merges main, post-experimental, and pre-experimental data
 - Creates treatment indicators: `treated`, `paid_round`, `pay_for_data`
