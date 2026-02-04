@@ -1,61 +1,230 @@
 # Does Paying for Data Change Investment Decisions?
 
-This repository contains the code, simulations, and documentation supporting the paper:
+**Philipp Chapkovski, Arzu Işık, Mariana Khapko, and Marius Zoican**
 
-**Does Paying for Data Change Investment Decisions?**  
-Philipp Chapkovski, Arzu Işık, Mariana Khapko, and Marius Zoican
+## Experimental Replication Package
 
-The project studies how paying for market data (as opposed to receiving it for free)
-affects belief formation, forecasting, and investment behavior in a controlled
-investment experiment.
+### Quick Start
 
----
+To replicate all results:
 
-### Repository Overview
+1. **Generate Simulations**:
+   ```bash
+   cd simulations/
+   Rscript market_simulation.R 
+   python merge_roundnumber_seed.py
+   Rscript value_data.R 
+   ```
 
-This repository is organized to separate **experimental data and empirical analysis**,
-**theoretical simulations**, and **supporting documentation**.  
+2. **Analyze Experimental Data**:
+   ```bash
+   cd Investment_Decision_Project/code/
+   python prepare_panels.py
+   Rscript regression_code.R
+   python figures.py
 
----
-
-### Directory Structure
-
-#### `experimental_project/`
-Contains all code and outputs used for the **main empirical analysis** in the paper.
-
-- Data processing scripts  
-- Estimation code  
-- Regression outputs and tables  
-- Figures used in the paper  
-
-This folder is the primary entry point for reproducing the empirical results.
+   # (optional) additional specifications / robustness
+   Rscript additional_exploration.R
+   ```
 
 ---
 
-#### `simulations/`
-Contains theory and simulation code used to:
+## Repository Structure
 
-- Calibrate the experimental environment  
-- Simulate investment outcomes  
-- Quantify the ex-ante value of data acquisition  
+```
+├── simulations/
+│   ├── code/                         # Simulation scripts
+│   │   ├── config.R
+│   │   ├── market_simulation.R
+│   │   ├── order_imbalance_distribution.R
+│   │   ├── run_simulations.R
+│   │   ├── select_seeds.R
+│   │   ├── value_data.R
+│   │   └── merge_roundnumber_seed.py
+│   │
+│   └── generated_data/               # Simulation outputs (auto-generated)
+│       ├── consolidated_simulation_results.csv
+│       ├── round_metadata.csv
+│       ├── plot_paths/               # Output: price path visualizations
+│       └── plots/                    # Output: value-of-data panels
+│
+└── Investment_Decision_Project/       # Experimental analysis
+    ├── code/
+    │   ├── prepare_panels.py
+    │   ├── regression_code.R
+    │   ├── figures.py
+    │   └── payoff_computation.py
+    ├── data/                         # Raw oTree exports (input data)
+    ├── generated_data/               # Generated datasets (created by code)
+    ├── tables/                       # Output: LaTeX tables
+    └── figures/                      # Output: EPS figures
+
+```
+---
+
+## Prerequisites
+
+**R packages:**
+```r
+install.packages(c("tidyverse", "fixest", "stargazer", "ggplot2", "ggfixest", "cowplot"))
+```
+
+**Python packages:**
+```bash
+pip install pandas numpy matplotlib seaborn statsmodels
+```
 
 ---
 
-#### `plots/` and `plot_paths/`
-Scripts and outputs used to generate figures based on simulation and empirical results.
+## Simulations
+
+### 1. Generate Experimental Rounds
+
+```bash
+cd simulations/
+Rscript run_simulations.R
+```
+
+**What it does:**
+- Generates 12 experimental rounds (+ 2 training)
+- Creates price path visualizations with/without order flow access
+- Saves PNG files in `plot_paths/`
+- Outputs consolidated results to CSV
+
+**Output files:**
+- `plot_paths/sim_seed-*_info-*_access.png` (24 files)
+- `plot_paths/sim_seed-*_info-*_noaccess.png`
+- `consolidated_simulation_results.csv`
+
+
+
+### 2. Calculate Data Valuation
+
+```bash
+Rscript value_data.R
+```
+
+**Output:** `plots/info_value_panels.png` showing:
+- (A) Distribution of optimal investment shares
+- (B) Distribution of certainty equivalents  
+- (C) Value of data across risk aversion levels
+
+### 3. Merge Round Metadata
+
+```bash
+python merge_roundnumber_seed.py
+```
+
+**Output:** `round_metadata.csv` mapping experimental rounds to simulation seeds
 
 ---
 
-#### `tables/`
-Generated regression tables and intermediate outputs used in the paper.
+## Experimental Analysis
+
+### Data Preparation
+
+```bash
+cd Investment_Decision_Project/code/
+python prepare_panels.py
+```
+
+**What it does:**
+- Filters to completed session: `tmjewif2` (Jan 21-22, 2026)
+- Drops training rounds
+- Merges main, post-experimental, and pre-experimental data
+- Creates treatment indicators: `treated`, `paid_round`, `pay_for_data`
+- Calculates derived variables: `investment_share`, `overconfidence`, `fin_quiz`
+- Merges simulation metadata (seeds, returns, imbalances)
+
+**Output:** `../processed_panels.csv`
 
 ---
 
-#### `IRISS/`
-Documentation related to research ethics approval and experimental protocols.
+### Main Regression Analysis
 
-Includes:
-- REB certificate  
-- Consent forms  
-- Experimental protocols  
-- Platform screenshots and methodology documents
+```bash
+Rscript regression_code.R
+```
+
+**Generates 6 tables in `../tables/`:**
+
+1. **beliefs_table.tex**: Payment effect on perceived informativeness
+   - Tests if paying increases belief that data is informative
+   - Sample splits: All, High literacy, Low literacy
+
+2. **forecasts_table.tex**: Payment effect on forecast sensitivity to order flow
+   - For participants who believe data is informative
+   - Placebo test on those who believe it's uninformative
+
+3. **forecastserror_table.tex**: Forecast errors in uninformative rounds
+   - Tests "noise overfitting" when paying for data
+
+4. **iv_table.tex**: Investment pass-through (instrumental variables)
+   - First stage: Order imbalance instruments return forecasts
+   - Second stage: Investment response to (instrumented) forecasts
+   - Tests if payment reduces forecast pass-through
+
+5. **selection_table.tex**: Who chooses to pay for data
+   - OLS and Probit specifications
+   - Predictors: overconfidence, financial literacy, demographics
+
+6. **summary_stats.tex**: Descriptive statistics
+
+**Also generates:** `../figures/figure_iv_results.eps`
+
+---
+
+### Generate Figures
+
+```bash
+python figures.py
+```
+
+**Generates 3 figures in `../figures/`:**
+
+1. **paid_beliefs.eps**: 
+   - (A) Impact of payments on beliefs
+   - (B) Selection effect
+
+2. **paid_forecasts.eps**:
+   - Return forecasts by order imbalance (positive/negative)
+   - Split by: (A) Full sample, (B) High literacy, (C) Low literacy
+
+3. **selection.eps**:
+   - (A) Pay choice by financial literacy
+   - (B) Pay choice by overconfidence
+
+## Experimental Design
+
+**Sample:** 771 participants via Prolific (Jan 21-22, 2026), stratified by U.S. census demographics
+
+**Treatment Structure:**
+- **Treatment group (75%)**: Choose to pay E$5 for order flow data each round
+  - Paid rounds (probability 2/3): Choice is binding
+  - Free rounds (probability 1/3): Everyone receives data free
+- **Control group (25%)**: Always receive data free
+
+**Rounds:** 14 total (2 training + 12 main)
+- 50% informative (order flow predicts returns, ρ ≈ 0.75)
+- 50% baseline (order flow is pure noise, ρ ≈ 0)
+- Participants not told which is which
+
+**Each Round:**
+1. [Treatment only] Choose whether to pay E$5 for data
+2. View price path (16 half-hour intervals, 9:00-16:30)
+3. View order flow (if have access) or "no access" message
+4. Report belief: "Is order flow informative?"
+5. Forecast next return
+6. Choose investment amount (E$0-100)
+
+**Post-Experiment Measures:**
+- Financial literacy quiz (13 questions)
+- Risk aversion (Holt-Laury task)
+- Demographics and trading experience
+
+## Authors
+
+- **Philipp Chapkovski** (University of Duisburg-Essen) - chapkovski@gmail.com
+- **Arzu Işık** (University of Calgary) - arzu.isiktopbas@ucalgary.ca
+- **Mariana Khapko** (University of Toronto) - mariana.khapko@rotman.utoronto.ca
+- **Marius Zoican** (University of Calgary) - marius.zoican@haskayne.ucalgary.ca
