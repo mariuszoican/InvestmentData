@@ -194,34 +194,6 @@ python figures.py
    - (A) Pay choice by financial literacy
    - (B) Pay choice by overconfidence
 
-## Experimental Design
-
-**Sample:** 771 participants via Prolific (Jan 21-22, 2026), stratified by U.S. census demographics
-
-**Treatment Structure:**
-- **Treatment group (75%)**: Choose to pay E$5 for order flow data each round
-  - Paid rounds (probability 2/3): Choice is binding
-  - Free rounds (probability 1/3): Everyone receives data free
-- **Control group (25%)**: Always receive data free
-
-**Rounds:** 14 total (2 training + 12 main)
-- 50% informative (order flow predicts returns, ρ ≈ 0.75)
-- 50% baseline (order flow is pure noise, ρ ≈ 0)
-- Participants not told which is which
-
-**Each Round:**
-1. [Treatment only] Choose whether to pay E$5 for data
-2. View price path (16 half-hour intervals, 9:00-16:30)
-3. View order flow (if have access) or "no access" message
-4. Report belief: "Is order flow informative?"
-5. Forecast next return
-6. Choose investment amount (E$0-100)
-
-**Post-Experiment Measures:**
-- Financial literacy quiz (13 questions)
-- Risk aversion (Holt-Laury task)
-- Demographics and trading experience
-
 ## Authors
 
 - **Philipp Chapkovski** (University of Duisburg-Essen) - chapkovski@gmail.com
