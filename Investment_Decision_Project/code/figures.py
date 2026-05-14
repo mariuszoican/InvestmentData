@@ -1,4 +1,3 @@
-
 # figures.py
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -22,7 +21,7 @@ def settings_plot(ax):
     return ax
 
 
-panel = pd.read_csv("../processed_panels.csv")
+panel = pd.read_csv("../generated_data/processed_panels.csv")
 
 # standardizations
 for col in [
@@ -59,11 +58,9 @@ sns.barplot(
     palette="Blues",
 )
 
-
 plt.xlabel("Informative round", fontsize=22)
 plt.ylabel("Belief round is informative", fontsize=22)
 plt.title("(A) Impact of payments on beliefs", fontsize=22, pad=50)
-
 
 plt.legend(
     title="Paid data round",
@@ -79,7 +76,6 @@ ax.set_xticklabels(["No", "Yes"], fontsize=22)
 ax = fig.add_subplot(gs[0, 1])
 ax = settings_plot(ax)
 
-
 sns.barplot(
     data=panel[panel.treated == 1],
     y="belief_informative",
@@ -93,8 +89,7 @@ sns.barplot(
 
 plt.title("(B) Selection effect", fontsize=22, pad=50)
 plt.xlabel("Informative round", fontsize=22)
-plt.ylabel("Choose to pay", fontsize=22)
-
+plt.ylabel("Belief round is informative", fontsize=22)
 
 plt.legend(
     title="Pay choice",
@@ -116,7 +111,6 @@ panel["positive_imbalance"] = np.where(panel["last_imbalance_1"] >= 0, 1, 0)
 
 plt.clf()
 
-
 model = smf.ols(
     "return_forecast ~ last_return_1 + overconfidence + treated + pay_choice + fin_quiz + gender_female + age + round_number",
     data=panel[panel.belief_informative == 1],
@@ -125,9 +119,8 @@ model = smf.ols(
 loc = ("top left",)
 
 panel["return_forecast_resid"] = (
-    model.resid + panel[panel.belief_informative == 1]["return_forecast"].mean()
+        model.resid + panel[panel.belief_informative == 1]["return_forecast"].mean()
 )  # add back mean for interpretability
-
 
 gs = gridspec.GridSpec(1, 3)
 sizefigs_L = (21, 9)
@@ -135,7 +128,6 @@ fig = plt.figure(facecolor="white", figsize=sizefigs_L)
 
 ax = fig.add_subplot(gs[0, 0])
 ax = settings_plot(ax)
-
 
 sns.barplot(
     data=panel[(panel.belief_informative == 1)],
@@ -221,7 +213,6 @@ plt.tight_layout(pad=3.0)
 # plt.show()
 plt.savefig("../figures/paid_forecasts.eps")
 
-
 plt.clf()
 
 panel["overconfidence_above"] = np.where(panel["overconfidence"] > 0, "Yes", "No")
@@ -262,7 +253,6 @@ sns.barplot(
 plt.title("(B) Overconfidence", fontsize=22)
 plt.xlabel("Overconfidence above average", fontsize=22)
 plt.ylabel("Pay for data", fontsize=22)
-
 
 plt.tight_layout(pad=2.0)
 # plt.show()
