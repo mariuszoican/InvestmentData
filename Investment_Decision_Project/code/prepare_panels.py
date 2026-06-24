@@ -1,4 +1,3 @@
-
 # prepare_panels.py
 
 import numpy as np
@@ -12,7 +11,7 @@ session_code = ["tmjewif2"]  # Jan 21 session on Prolific
 
 # Read experiment file
 data = pd.read_csv(f"../data/{main_name}.csv")
-meta = pd.read_csv("../../simulations/round_metadata.csv")  # load seed and imbalance
+meta = pd.read_csv("../../simulations/generated_data/round_metadata.csv")  # load seed and imbalance
 post_exp = pd.read_csv(f"../data/{post_name}.csv")  # post experimental data
 pre_exp = pd.read_csv(f"../data/{pre_name}.csv")  # pre experiment
 
@@ -44,7 +43,7 @@ post_exp = post_exp[
 
 # financial quiz score
 post_exp["fin_quiz"] = (
-    post_exp["player.num_correct_answers"] / post_exp["player.num_quiz_questions"]
+        post_exp["player.num_correct_answers"] / post_exp["player.num_quiz_questions"]
 )
 post_exp["gender_female"] = np.where(post_exp["player.gender"] == "Female", 1, 0)
 post_exp["finance_course"] = post_exp["player.course_financial"]
@@ -116,7 +115,7 @@ data["paid_dummy"] = np.where(
     (data["paid_round"] == 1) & (data["pay_for_data"] == 1), 1, 0
 )
 data["investment_share"] = (
-    100 * data["investment_amount"] / np.where(data["paid_dummy"] == 1, 95, 100)
+        100 * data["investment_amount"] / np.where(data["paid_dummy"] == 1, 95, 100)
 )
 
 # add metadata for the given round
@@ -124,21 +123,14 @@ data = data.merge(
     meta[
         [
             "round_number",
-            "last_imbalance_1",
-            "last_return_1",
-            "last_imbalance_2",
-            "last_return_2",
-            "last_imbalance_3",
-            "last_return_3",
+            "last_imbalance",
+            "last_return",
             "next_return",
         ]
     ],
     on="round_number",
     how="left",
 )
-
-data["imb_difference"] = data["last_imbalance_1"] - data["last_imbalance_2"]
-data["return_difference"] = data["last_return_1"] - data["last_return_2"]
 
 # # standardizations
 # for col in [

@@ -1,4 +1,3 @@
-
 # regression_code.R
 
 library(tidyverse)
@@ -24,10 +23,8 @@ df <- df %>%
     fin_quiz_raw = fin_quiz,
     overconfidence_raw = overconfidence,
     risk_aversion_raw = risk_aversion,
-    last_imbalance_1_raw = last_imbalance_1,
-    last_return_1_raw = last_return_1,
-    imb_difference_raw = imb_difference,
-    return_difference_raw = return_difference
+    last_imbalance_raw = last_imbalance,
+    last_return_raw = last_return,
   )
 
 # Standardize
@@ -35,7 +32,7 @@ df <- df %>%
   mutate(
     across(
       c(round_number, age, fin_quiz, overconfidence, risk_aversion,
-        last_imbalance_1, last_return_1, imb_difference, return_difference),
+        last_imbalance, last_return),
       ~(. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)
     )
   )
@@ -45,24 +42,24 @@ df <- df %>%
   mutate(
     correct_belief = as.integer(belief_informative == informative),
     pay_choice = treated * pay_for_data,
-    choice_imbalance = pay_choice * last_imbalance_1,
+    choice_imbalance = pay_choice * last_imbalance,
     paid_informative = paid_round * informative,
     paid_uninformative = paid_round * (1 - informative),
     paid_belief_informative = paid_round * belief_informative,
     paid_belief_uninformative = paid_round * (1 - belief_informative),
     paid_informative_imbalance = paid_round *
       belief_informative *
-      last_imbalance_1,
+      last_imbalance,
     paid_uninformative_imbalance = paid_round *
       (1 - belief_informative) *
-      last_imbalance_1,
-    paid_imbalance = paid_round * last_imbalance_1,
-    belief_informative_imbalance = belief_informative * last_imbalance_1,
+      last_imbalance,
+    paid_imbalance = paid_round * last_imbalance,
+    belief_informative_imbalance = belief_informative * last_imbalance,
     rf_x_paid = return_forecast * paid_round,
     rf_x_unpaid = return_forecast * (1 - paid_round),
-    z_x_paid = last_imbalance_1 * paid_round,
-    z_x_unpaid = last_imbalance_1 * (1 - paid_round),
-    r_x_paid = last_return_1 * paid_round
+    z_x_paid = last_imbalance * paid_round,
+    z_x_unpaid = last_imbalance * (1 - paid_round),
+    r_x_paid = last_return * paid_round
   ) %>%
   group_by(participant_code) %>%
   mutate(share_correct = mean(correct_belief, na.rm = TRUE)) %>%
@@ -78,12 +75,12 @@ setFixest_dict(c(
   paid_imbalance = "Paid $\\times$ Imbalance",
   paid_informative = "Paid $\\times$ Informative",
   paid_uninformative = "Paid $\\times$ Not informative",
-  last_imbalance_1 = "Last imbalance",
+  last_imbalance = "Last imbalance",
   pay_choice = "Choose to pay",
   choice_imbalance = "Choose to pay $\\times$ Imbalance",
   paid_round = "Paid round",
   informative = "Informative round",
-  last_return_1 = "Last return",
+  last_return = "Last return",
   overconfidence = "Overconfidence",
   fin_quiz = "Financial quiz",
   rf_x_paid = "Return forecast $\\times$ Paid round",
@@ -112,7 +109,7 @@ bel1 <- feols(
     "belief_informative ~ paid_uninformative +",
     "paid_round + treated + informative +",
     "pay_choice + round_number +",
-    "last_return_1 + last_imbalance_1 +",
+    "last_return + last_imbalance +",
     controls_str
   )),
   data = subset(df),
@@ -124,7 +121,7 @@ bel2 <- feols(
     "belief_informative ~ paid_uninformative +",
     "paid_round + treated + informative +",
     "pay_choice + round_number +",
-    "last_return_1 + last_imbalance_1"
+    "last_return + last_imbalance"
   )),
   data = subset(df),
   cluster = ~participant_code + round_number
@@ -135,7 +132,7 @@ bel3 <- feols(
     "belief_informative ~ paid_uninformative +",
     "paid_round + treated + informative +",
     "pay_choice + round_number +",
-    "last_return_1 + last_imbalance_1 +",
+    "last_return + last_imbalance +",
     controls_str
   )),
   data = subset(df, fin_quiz >= 0),
@@ -147,7 +144,7 @@ bel4 <- feols(
     "belief_informative ~ paid_uninformative +",
     "paid_round + treated + informative +",
     "pay_choice + round_number +",
-    "last_return_1 + last_imbalance_1"
+    "last_return + last_imbalance"
   )),
   data = subset(df, fin_quiz >= 0),
   cluster = ~participant_code + round_number)
@@ -157,7 +154,7 @@ bel5 <- feols(
     "belief_informative ~ paid_uninformative +",
     "paid_round + treated + informative +",
     "pay_choice + round_number +",
-    "last_return_1 + last_imbalance_1 +",
+    "last_return + last_imbalance +",
     controls_str
   )),
   data = subset(df, fin_quiz < 0),
@@ -169,7 +166,7 @@ bel6 <- feols(
     "belief_informative ~ paid_uninformative +",
     "paid_round + treated + informative +",
     "pay_choice + round_number +",
-    "last_return_1 + last_imbalance_1"
+    "last_return + last_imbalance"
   )),
   data = subset(df, fin_quiz < 0),
   cluster = ~participant_code + round_number)
@@ -205,7 +202,7 @@ for1 <- feols(
     "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1 +",
+    "last_return + last_imbalance +",
     controls_str
   )),
   data = subset(df, belief_informative == 1),
@@ -219,7 +216,7 @@ for2 <- feols(
     "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1"
+    "last_return + last_imbalance"
   )),
   data = subset(df, belief_informative == 1),
   cluster = ~participant_code + round_number
@@ -231,7 +228,7 @@ for3 <- feols(
     "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1 +",
+    "last_return + last_imbalance +",
     controls_str
   )),
   data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
@@ -245,7 +242,7 @@ for4 <- feols(
     "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1"
+    "last_return + last_imbalance"
   )),
   data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
   cluster = ~participant_code + round_number
@@ -257,7 +254,7 @@ for5 <- feols(
     "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1 +",
+    "last_return + last_imbalance +",
     controls_str
   )),
   data = subset(df, belief_informative == 0),
@@ -271,7 +268,7 @@ for6 <- feols(
     "paid_imbalance +",
     "pay_choice + choice_imbalance +",
     "paid_round +",
-    "last_return_1 + last_imbalance_1"
+    "last_return + last_imbalance"
   )),
   data = subset(df, belief_informative == 0),
   cluster = ~participant_code + round_number
@@ -307,51 +304,51 @@ writeLines(for_tex, "../tables/forecasts_table.tex")
 
 iv1 <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid +",
     controls_str,
-    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance + z_x_paid"
   )),
   data = subset(df, belief_informative == 1),
   cluster = ~participant_code + round_number
 )
 iv2 <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid",
-    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid",
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance + z_x_paid"
   )),
   data = subset(df, belief_informative == 1),
   cluster = ~participant_code + round_number
 )
 iv3 <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid +",
     controls_str,
-    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance + z_x_paid"
   )),
   data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
   cluster = ~participant_code + round_number
 )
 iv4 <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid",
-    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid",
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance + z_x_paid"
   )),
   data = subset(df, (belief_informative == 1) & (fin_quiz > 0)),
   cluster = ~participant_code + round_number
 )
 iv5 <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid +",
     controls_str,
-    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance + z_x_paid"
   )),
   data = subset(df, (belief_informative == 1) & (fin_quiz <= 0)),
   cluster = ~participant_code + round_number
 )
 iv6 <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid",
-    "| 0 | return_forecast + rf_x_paid ~ last_imbalance_1 + z_x_paid"
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid",
+    "| 0 | return_forecast + rf_x_paid ~ last_imbalance + z_x_paid"
   )),
   data = subset(df, (belief_informative == 1) & (fin_quiz <= 0)),
   cluster = ~participant_code + round_number
@@ -368,7 +365,7 @@ iv_tex <- etable(
   order = c(
     "return_forecast", "rf_x_paid", "paid_round", "treated",
     "pay_choice", "choice_imbalance",
-    "last_return_1", "r_x_paid",
+    "last_return", "r_x_paid",
     "overconfidence", "fin_quiz", "gender_female", "age",
     "finance_course", "trading_experience", "risk_aversion", "round_number"
   ),
@@ -479,7 +476,7 @@ stargazer(
 
 iv1fig <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid +",
     controls_str,
     "| 0 | rf_x_unpaid + rf_x_paid ~ z_x_unpaid + z_x_paid"
   )),
@@ -488,7 +485,7 @@ iv1fig <- feols(
 )
 iv3fig <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid +",
     controls_str,
     "| 0 | rf_x_unpaid + rf_x_paid ~ z_x_unpaid + z_x_paid"
   )),
@@ -497,7 +494,7 @@ iv3fig <- feols(
 )
 iv5fig <- feols(
   as.formula(paste(
-    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return_1 + r_x_paid +",
+    "investment_share ~ treated + paid_round + pay_choice + round_number + last_return + r_x_paid +",
     controls_str,
     "| 0 | rf_x_unpaid + rf_x_paid ~ z_x_unpaid + z_x_paid"
   )),
@@ -603,3 +600,5 @@ ggsave(
   height = 5,
   dpi = 300
 )
+
+print("File done!")

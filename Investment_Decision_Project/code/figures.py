@@ -30,10 +30,8 @@ for col in [
     "fin_quiz",
     "overconfidence",
     "risk_aversion",
-    "last_imbalance_1",
-    "last_return_1",
-    "imb_difference",
-    "return_difference",
+    "last_imbalance",
+    "last_return",
 ]:
     panel[col] = (panel[col] - panel[col].mean()) / panel[col].std()
 panel["pay_choice"] = panel["treated"] * panel["pay_for_data"]
@@ -107,12 +105,12 @@ plt.tight_layout(pad=2.0)
 plt.savefig("../figures/paid_beliefs.eps")
 
 panel["high_quiz"] = np.where(panel["fin_quiz"] >= panel["fin_quiz"].mean(), 1, 0)
-panel["positive_imbalance"] = np.where(panel["last_imbalance_1"] >= 0, 1, 0)
+panel["positive_imbalance"] = np.where(panel["last_imbalance"] >= 0, 1, 0)
 
 plt.clf()
 
 model = smf.ols(
-    "return_forecast ~ last_return_1 + overconfidence + treated + pay_choice + fin_quiz + gender_female + age + round_number",
+    "return_forecast ~ last_return + overconfidence + treated + pay_choice + fin_quiz + gender_female + age + round_number",
     data=panel[panel.belief_informative == 1],
     missing="drop",
 ).fit()
