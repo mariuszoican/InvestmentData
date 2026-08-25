@@ -1,4 +1,23 @@
-.Rproj.user
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# R
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Regenerated analysis output
+output/tables/
+output/figures/

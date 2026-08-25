@@ -1,0 +1,40 @@
+session_id: '20260824'
+export_date: '2026-08-24'
+oTree_codes:
+- 9vfoiax5
+include: true
+notes: Lab session. 37 completers of 39 who started (2 left in intro).
+processed_at: '2026-08-25T01:37:02.172232+00:00'
+counts:
+  slots_in_export: 100
+  started: 39
+  completed: 37
+  incomplete: 2
+  never_started: 61
+  paid: 37
+payoffs_points:
+  n: 37
+  min: 107.53
+  max: 155.98
+  mean: 129.48135135135135
+payments:
+  participation_fee_cad: 15.0
+  exchange_rate: 0.1
+  experimental_payoff_cad_sum: 479.13000000000005
+  total_payment_cad_sum: 1034.13
+incomplete:
+- participant_code: mbi772qr
+  page: comprehensionQuestions
+  app: intro
+  index_in_pages: 3
+  time_started_utc: '2026-08-24 18:49:01.011214'
+  payoff_points: 0.0
+- participant_code: ms2vytj1
+  page: Instructions
+  app: intro
+  index_in_pages: 2
+  time_started_utc: '2026-08-24 19:04:23.993431'
+  payoff_points: 0.0
+flags:
+- player.payoff_for_trade is 0 for every completer (using participant.payoff for experimental
+  earnings)

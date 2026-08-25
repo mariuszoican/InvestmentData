@@ -1,0 +1,9 @@
+# Design / payment parameters shared by session processing.
+# Keep these aligned with the oTree session config and the lab protocol.
+
+exchange_rate: 0.10 # experimental $ (E$) → CAD
+participation_fee: 15.00 # CAD show-up fee (not stored in oTree for this lab)
+completed_pages: # oTree pages that count as finished
+  - FinalForProlific
+  - Payoff
+drop_training: true # drop player.round_type == training from the round panel

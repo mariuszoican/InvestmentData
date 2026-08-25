@@ -1,0 +1,101 @@
+﻿participant.id_in_session,participant.code,participant.label,participant._is_bot,participant._index_in_pages,participant._max_page_index,participant._current_app_name,participant._current_page_name,participant.time_started_utc,participant.visited,participant.mturk_worker_id,participant.mturk_assignment_id,participant.payoff,player.id_in_group,player.role,player.payoff,player.consent,player.condition,player.user_agent_browser,player.user_agent_browser_version,player.user_agent_os,player.user_agent_os_version,player.user_agent_device,player.user_agent_is_bot,player.user_agent_is_mobile,player.user_agent_is_tablet,player.user_agent_is_pc,player.attention_check,player.attention_check_passed,player.q1,player.q2,player.q3,player.q4,player.q5,player.q6,player.self_assesment,group.id_in_subsession,subsession.round_number,session.code,session.label,session.mturk_HITId,session.mturk_HITGroupId,session.comment,session.is_demo
+1,mbi772qr,,0,3,70,intro,comprehensionQuestions,2026-08-24 18:49:01.011214,1,,,0.0,1,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,,,,,,,,,,1,1,9vfoiax5,,,,,0
+2,ttbhrq7x,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:02.785387,1,,,125.21,2,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,8,1,1,9vfoiax5,,,,,0
+3,h6ra9n61,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:04.680764,1,,,144.01,3,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,9,1,1,9vfoiax5,,,,,0
+4,4tucoz6l,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:07.603497,1,,,119.79,4,,0.0,1,treatment,Firefox,154.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+5,47cbw4kl,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:07.882773,1,,,141.4,5,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+6,w1hg4dq2,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:08.230442,1,,,121.45,6,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+7,2am1bt7m,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:08.487174,1,,,118.16,7,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+8,f0dtgw15,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:08.729020,1,,,129.55,8,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,4,1,1,9vfoiax5,,,,,0
+9,gtr4o4u4,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:09.330479,1,,,126.75,9,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+10,edlvyy4x,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:09.368408,1,,,131.35,10,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,8,1,1,9vfoiax5,,,,,0
+11,454urtzl,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:09.375937,1,,,149.46,11,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,4,1,1,9vfoiax5,,,,,0
+12,y7r9sa4u,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:10.658299,1,,,119.6,12,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+13,pm665xdw,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:10.667922,1,,,125.96,13,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+14,qgszrtu9,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:11.147052,1,,,121.99,14,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+15,0z4ddbix,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:11.337225,1,,,143.86,15,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,7,1,1,9vfoiax5,,,,,0
+16,t6rthajw,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:12.015053,1,,,132.66,16,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+17,wel7w6gg,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:13.709515,1,,,155.98,17,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,7,1,1,9vfoiax5,,,,,0
+18,u4dpd5wy,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:14.397432,1,,,122.85,18,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,4,1,1,9vfoiax5,,,,,0
+19,y3uiqp3t,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:14.803975,1,,,133.98,19,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+20,atqtlu6a,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:15.002851,1,,,126.01,20,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+21,cuq5iz33,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:15.286301,1,,,111.24,21,,0.0,1,treatment,Chrome,150.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,9,1,1,9vfoiax5,,,,,0
+22,4yux8e22,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:16.409415,1,,,121.61,22,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+23,f291tr7u,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:17.330849,1,,,136.85,23,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+24,w3cukoe0,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:23.181196,1,,,123.6,24,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,1,1,1,9vfoiax5,,,,,0
+25,ms2vytj1,,0,2,70,intro,Instructions,2026-08-24 19:04:23.993431,1,,,0.0,25,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,,,,,,,,,,1,1,9vfoiax5,,,,,0
+26,4zd5ned9,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:26.439460,1,,,135.3,26,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+27,mknb67le,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:27.321536,1,,,130.06,27,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,4,1,1,9vfoiax5,,,,,0
+28,sp03734d,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:30.219444,1,,,128.17,28,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+29,m7hitpc7,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:32.107936,1,,,139.39,29,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+30,92y585sb,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:32.444838,1,,,122.81,30,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+31,ki9t1ots,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:33.838151,1,,,113.81,31,,0.0,1,treatment,Chrome,150.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+32,8ygvklh3,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:35.859366,1,,,149.01,32,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+33,j6pfvo4x,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:41.745324,1,,,129.0,33,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,4,1,1,9vfoiax5,,,,,0
+34,mrwqmc94,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:04:49.104405,1,,,140.54,34,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,8,1,1,9vfoiax5,,,,,0
+35,8lotxa0v,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:05:04.989442,1,,,142.84,35,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,7,1,1,9vfoiax5,,,,,0
+36,zy0t07g5,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:05:06.605976,1,,,137.36,36,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,3,1,1,9vfoiax5,,,,,0
+37,zs0yllk7,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:07:16.492104,1,,,113.91,37,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+38,9ozs75r2,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:07:56.656898,1,,,107.53,38,,0.0,1,treatment,Edge,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,6,1,1,9vfoiax5,,,,,0
+39,nn4f2puj,,0,71,70,post_exp,FinalForProlific,2026-08-24 19:14:35.491322,1,,,117.76,39,,0.0,1,treatment,Chrome,151.0.0,Windows,10,Other,0,0,0,1,third_option,1,,,,,,,5,1,1,9vfoiax5,,,,,0
+40,e6l8r86w,,0,0,70,,,,0,,,0.0,40,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+41,ibmnj0en,,0,0,70,,,,0,,,0.0,41,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+42,g3diltkg,,0,0,70,,,,0,,,0.0,42,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+43,wk90mbeh,,0,0,70,,,,0,,,0.0,43,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+44,3foowxnr,,0,0,70,,,,0,,,0.0,44,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+45,ev1iw3qw,,0,0,70,,,,0,,,0.0,45,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+46,ut5aizm7,,0,0,70,,,,0,,,0.0,46,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+47,1qjv3zae,,0,0,70,,,,0,,,0.0,47,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+48,obgfwf3j,,0,0,70,,,,0,,,0.0,48,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+49,01inm7v3,,0,0,70,,,,0,,,0.0,49,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+50,fl3ak021,,0,0,70,,,,0,,,0.0,50,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+51,ob1mq6ck,,0,0,70,,,,0,,,0.0,51,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+52,n7f955uf,,0,0,70,,,,0,,,0.0,52,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+53,amuvphl2,,0,0,70,,,,0,,,0.0,53,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+54,shlbeg5b,,0,0,70,,,,0,,,0.0,54,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+55,uhmpg436,,0,0,70,,,,0,,,0.0,55,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+56,nbrt6etf,,0,0,70,,,,0,,,0.0,56,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+57,70pkzyy3,,0,0,70,,,,0,,,0.0,57,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+58,uoomw0hl,,0,0,70,,,,0,,,0.0,58,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+59,8tq14md6,,0,0,70,,,,0,,,0.0,59,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+60,kpb7th1i,,0,0,70,,,,0,,,0.0,60,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+61,ejh88l21,,0,0,70,,,,0,,,0.0,61,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+62,kfqet8lf,,0,0,70,,,,0,,,0.0,62,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+63,38co354t,,0,0,70,,,,0,,,0.0,63,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+64,ig0psbgv,,0,0,70,,,,0,,,0.0,64,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+65,ap78jjvb,,0,0,70,,,,0,,,0.0,65,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+66,hky5ff1p,,0,0,70,,,,0,,,0.0,66,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+67,ipyuz9yc,,0,0,70,,,,0,,,0.0,67,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+68,dmuqo2pm,,0,0,70,,,,0,,,0.0,68,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+69,3p7fiige,,0,0,70,,,,0,,,0.0,69,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+70,z9g2b7dv,,0,0,70,,,,0,,,0.0,70,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+71,2v85eltc,,0,0,70,,,,0,,,0.0,71,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+72,nwzxhd22,,0,0,70,,,,0,,,0.0,72,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+73,hhvg8dt9,,0,0,70,,,,0,,,0.0,73,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+74,hz97l3jc,,0,0,70,,,,0,,,0.0,74,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+75,dcxaigd7,,0,0,70,,,,0,,,0.0,75,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+76,vjixc1un,,0,0,70,,,,0,,,0.0,76,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+77,z8029ckh,,0,0,70,,,,0,,,0.0,77,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+78,3ajdtztt,,0,0,70,,,,0,,,0.0,78,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+79,c0q4hh66,,0,0,70,,,,0,,,0.0,79,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+80,961wk1qs,,0,0,70,,,,0,,,0.0,80,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+81,w491itd2,,0,0,70,,,,0,,,0.0,81,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+82,rqpr7w44,,0,0,70,,,,0,,,0.0,82,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+83,tcezkc06,,0,0,70,,,,0,,,0.0,83,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+84,27fva1ym,,0,0,70,,,,0,,,0.0,84,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+85,ff38ebjf,,0,0,70,,,,0,,,0.0,85,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+86,7g4fcwt0,,0,0,70,,,,0,,,0.0,86,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+87,r2ac4gyq,,0,0,70,,,,0,,,0.0,87,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+88,12cm0jri,,0,0,70,,,,0,,,0.0,88,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+89,jqzwvjpw,,0,0,70,,,,0,,,0.0,89,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+90,9dwbubz8,,0,0,70,,,,0,,,0.0,90,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+91,tb8z9wax,,0,0,70,,,,0,,,0.0,91,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+92,9ohsiz7w,,0,0,70,,,,0,,,0.0,92,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+93,pv1iwj03,,0,0,70,,,,0,,,0.0,93,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+94,w10txphz,,0,0,70,,,,0,,,0.0,94,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+95,3tnk0fmb,,0,0,70,,,,0,,,0.0,95,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+96,052hfmvo,,0,0,70,,,,0,,,0.0,96,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+97,ajarnpsx,,0,0,70,,,,0,,,0.0,97,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+98,tzeyjcdp,,0,0,70,,,,0,,,0.0,98,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+99,0fl0zsi3,,0,0,70,,,,0,,,0.0,99,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
+100,3ou8lc3a,,0,0,70,,,,0,,,0.0,100,,0.0,,treatment,,,,,,,,,,,,,,,,,,,1,1,9vfoiax5,,,,,0
