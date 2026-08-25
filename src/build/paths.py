@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -10,10 +11,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = REPO_ROOT / "config"
 DATA_DIR = REPO_ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
-INTERIM_DIR = DATA_DIR / "interim"
-PROCESSED_DIR = DATA_DIR / "processed"
+PAYMENTS_DIR = DATA_DIR / "payments"
 ARCHIVE_DIR = DATA_DIR / "archive"
-OUTPUT_DIR = REPO_ROOT / "output"
 
 
 def load_sessions(path: Path | None = None) -> list[dict]:
@@ -43,10 +42,14 @@ def raw_dir_for(session: dict) -> Path:
     return root / str(session["id"])
 
 
-def interim_dir_for(session_id: str) -> Path:
-    return INTERIM_DIR / str(session_id)
+def _today_stamp(when: date | None = None) -> str:
+    return (when or date.today()).strftime("%Y%m%d")
 
 
-def payments_filename(session_id: str) -> str:
-    """Lab-facing workbook name: payments_{session_id}.xlsx."""
-    return f"payments_{session_id}.xlsx"
+def payments_xlsx_path(when: date | None = None) -> Path:
+    """Lab-facing file: data/payments/payments_YYYYMMDD.xlsx."""
+    return PAYMENTS_DIR / f"payments_{_today_stamp(when)}.xlsx"
+
+
+def session_log_path(when: date | None = None) -> Path:
+    return PAYMENTS_DIR / f"session_log_{_today_stamp(when)}.yaml"

@@ -6,4 +6,3 @@ participation_fee: 15.00 # CAD show-up fee (not stored in oTree for this lab)
 completed_pages: # oTree pages that count as finished
   - FinalForProlific
   - Payoff
-drop_training: true # drop player.round_type == training from the round panel

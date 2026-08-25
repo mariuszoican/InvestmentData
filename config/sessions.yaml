@@ -8,7 +8,7 @@
 #   - export_date:   date string in CSV filenames (YYYY-MM-DD); may differ
 #                    from the folder day when the export ran overnight
 #   - oTree_codes:   session.code values to include from those CSVs
-#   - include:       if true, enters data/processed/*_full.csv
+#   - include:       kept for later analysis sample selection
 #   - notes:         free text for co-authors
 #
 # Quote id values so YAML does not parse bare YYYYMMDD as integers.
@@ -18,4 +18,4 @@ sessions:
     export_date: "2026-08-24"
     oTree_codes: [9vfoiax5]
     include: true
-    notes: "Lab session. 37 completers of 39 who started (2 left in intro)."
+    notes: "Lab session FNCE 449/668. 37 completers of 39 who started (2 left in intro)."

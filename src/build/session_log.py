@@ -1,4 +1,4 @@
-"""Session logging: classify participants, write YAML + append-only markdown."""
+"""Session logging: classify participants and write a YAML sidecar."""
 
 from __future__ import annotations
 
@@ -7,9 +7,6 @@ from pathlib import Path
 
 import pandas as pd
 import yaml
-
-from paths import PROCESSED_DIR
-
 
 CSV_READ_KW = dict(encoding="utf-8-sig")
 
@@ -84,17 +81,20 @@ def build_session_record(
     never = groups["never_started"]
     payoffs = pd.to_numeric(completed.get("participant.payoff"), errors="coerce")
 
-    record = {
+    exp_sum = None
+    total_sum = None
+    if payments is not None and not payments.empty:
+        exp_sum = round(float(payments["experimental_payoff"].sum()), 2)
+        total_sum = round(float(payments["total_payment"].sum()), 2)
+
+    return {
         "session_id": session["id"],
         "export_date": session["export_date"],
         "oTree_codes": list(session["oTree_codes"]),
-        "include": bool(session.get("include", False)),
         "notes": session.get("notes", ""),
         "processed_at": processed_at or datetime.now(timezone.utc).isoformat(),
         "counts": {
-            "slots_in_export": int(
-                len(completed) + len(incomplete) + len(never)
-            ),
+            "slots_in_export": int(len(completed) + len(incomplete) + len(never)),
             "started": int(len(completed) + len(incomplete)),
             "completed": int(len(completed)),
             "incomplete": int(len(incomplete)),
@@ -110,71 +110,18 @@ def build_session_record(
         "payments": {
             "participation_fee_cad": params["participation_fee"],
             "exchange_rate": params["exchange_rate"],
-            "experimental_payoff_cad_sum": (
-                None
-                if payments is None or payments.empty
-                else float(payments["experimental_payoff"].sum())
-            ),
-            "total_payment_cad_sum": (
-                None
-                if payments is None or payments.empty
-                else float(payments["total_payment"].sum())
-            ),
+            "experimental_payoff_cad_sum": exp_sum,
+            "total_payment_cad_sum": total_sum,
         },
         "incomplete": _row_summaries(incomplete),
         "flags": flags,
     }
-    return record
 
 
-def write_session_log(record: dict, interim_dir: Path) -> Path:
-    interim_dir.mkdir(parents=True, exist_ok=True)
-    path = interim_dir / "session_log.yaml"
+def write_session_log(record: dict, path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         yaml.safe_dump(record, f, sort_keys=False, allow_unicode=True)
-    return path
-
-
-def append_session_log_md(record: dict, path: Path | None = None) -> Path:
-    """Append a human-readable block to the running lab log."""
-    path = path or (PROCESSED_DIR / "session_log.md")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    c = record["counts"]
-    p = record["payments"]
-    flags = record.get("flags") or ["none"]
-    incomplete_lines = []
-    for row in record.get("incomplete") or []:
-        incomplete_lines.append(
-            f"  - `{row['participant_code']}` on {row['app']}/{row['page']} "
-            f"(page {row['index_in_pages']})"
-        )
-    if not incomplete_lines:
-        incomplete_lines = ["  - (none)"]
-
-    block = "\n".join(
-        [
-            f"## {record['session_id']} — processed {record['processed_at']}",
-            "",
-            f"- oTree codes: `{', '.join(record['oTree_codes'])}`",
-            f"- export date: {record['export_date']}",
-            f"- notes: {record.get('notes') or '(none)'}",
-            f"- slots / started / completed / incomplete: "
-            f"{c['slots_in_export']} / {c['started']} / {c['completed']} / {c['incomplete']}",
-            f"- paid: {c['paid']}",
-            f"- experimental payoff (CAD): {p['experimental_payoff_cad_sum']}",
-            f"- total payments (CAD, incl. ${p['participation_fee_cad']:.2f} show-up): "
-            f"{p['total_payment_cad_sum']}",
-            f"- flags: {', '.join(flags)}",
-            "- incomplete:",
-            *incomplete_lines,
-            "",
-        ]
-    )
-    header = "# Session processing log\n\n"
-    existing = path.read_text() if path.exists() else header
-    if not existing.startswith("#"):
-        existing = header + existing
-    path.write_text(existing.rstrip() + "\n\n" + block + "\n")
     return path
 
 
@@ -220,14 +167,6 @@ def collect_quality_flags(
         flags.append(f"{len(completed) - n_email} completers missing email")
     if n_sid < len(completed):
         flags.append(f"{len(completed) - n_sid} completers missing student_id")
-
-    if "player.payoff_for_trade" in completed:
-        trade = pd.to_numeric(completed["player.payoff_for_trade"], errors="coerce")
-        if trade.fillna(0).eq(0).all():
-            flags.append(
-                "player.payoff_for_trade is 0 for every completer "
-                "(using participant.payoff for experimental earnings)"
-            )
 
     if not payments.empty:
         dup_email = payments["email"].astype(str).str.lower().duplicated(keep=False)
