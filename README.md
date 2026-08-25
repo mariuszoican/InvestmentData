@@ -10,9 +10,11 @@ config/
   parameters.yaml    # show-up fee, E$→CAD rate, completion pages
 data/
   raw/{session_id}/  # immutable oTree dumps — never edit
-  payments/          # payments_YYYYMMDD.xlsx (today's date)
+  payments/          # payments_{session id}.xlsx (lab folder date)
+  processed/         # processed_panels.csv
+  round_metadata.csv # round-level chart / return metadata
   archive/           # pilots / excluded sessions
-src/build/           # process_payments.py
+src/build/           # process_payments.py, process_panels.py
 ```
 
 ## Setup
@@ -46,7 +48,7 @@ pip install -r requirements.txt
 make payments ID=20260824
 ```
 
-Writes `data/payments/payments_YYYYMMDD.xlsx` using **today's date**, plus a sidecar `session_log_YYYYMMDD.yaml`. Completers are people on `FinalForProlific` or `Payoff`.
+Writes `data/payments/payments_{session id}.xlsx` using the lab folder date (`20260824`), plus a sidecar `session_log_{session id}.yaml`. Completers are people on `FinalForProlific` or `Payoff`.
 
 | Column | Source |
 |---|---|
@@ -57,3 +59,15 @@ Writes `data/payments/payments_YYYYMMDD.xlsx` using **today's date**, plus a sid
 | `total_payment` | show-up + experimental payoff |
 
 After changing the exchange rate, re-run the same command.
+
+## Analysis panel
+
+```bash
+make panels
+```
+
+Builds one participant × round file, `data/processed/processed_panels.csv`, from every
+`include: true` session in `config/sessions.yaml`. Training rounds are dropped;
+completers are the same pages as for payments. Round metadata comes from
+`data/round_metadata.csv` and is joined on `series_round` (the shuffled chart id),
+not display `round_number`.

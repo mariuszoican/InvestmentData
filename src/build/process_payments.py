@@ -1,7 +1,7 @@
 """
 Read one registered lab session from data/raw/ and write a payment workbook.
 
-Output: data/payments/payments_YYYYMMDD.xlsx (today's date).
+Output: data/payments/payments_{session_id}.xlsx (lab folder date).
 """
 
 from __future__ import annotations
@@ -141,8 +141,8 @@ def process_payments(session_id: str) -> dict:
         flags=flags,
     )
 
-    xlsx_path = write_payments_xlsx(payments, payments_xlsx_path())
-    write_session_log(record, session_log_path())
+    xlsx_path = write_payments_xlsx(payments, payments_xlsx_path(session["id"]))
+    write_session_log(record, session_log_path(session["id"]))
 
     print(format_stdout(record))
     print(f"  wrote {len(payments)} payments → {xlsx_path}")
@@ -151,7 +151,7 @@ def process_payments(session_id: str) -> dict:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Build today's payment workbook from one registered lab session."
+        description="Build the payment workbook for one registered lab session."
     )
     parser.add_argument(
         "--session",

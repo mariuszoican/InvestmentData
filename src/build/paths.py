@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import date
 from pathlib import Path
 
 import yaml
@@ -12,7 +11,9 @@ CONFIG_DIR = REPO_ROOT / "config"
 DATA_DIR = REPO_ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
 PAYMENTS_DIR = DATA_DIR / "payments"
+PROCESSED_DIR = DATA_DIR / "processed"
 ARCHIVE_DIR = DATA_DIR / "archive"
+ROUND_METADATA = DATA_DIR / "round_metadata.csv"
 
 
 def load_sessions(path: Path | None = None) -> list[dict]:
@@ -42,14 +43,14 @@ def raw_dir_for(session: dict) -> Path:
     return root / str(session["id"])
 
 
-def _today_stamp(when: date | None = None) -> str:
-    return (when or date.today()).strftime("%Y%m%d")
+def payments_xlsx_path(session_id: str) -> Path:
+    """Lab-facing file: data/payments/payments_{session_id}.xlsx."""
+    return PAYMENTS_DIR / f"payments_{session_id}.xlsx"
 
 
-def payments_xlsx_path(when: date | None = None) -> Path:
-    """Lab-facing file: data/payments/payments_YYYYMMDD.xlsx."""
-    return PAYMENTS_DIR / f"payments_{_today_stamp(when)}.xlsx"
+def session_log_path(session_id: str) -> Path:
+    return PAYMENTS_DIR / f"session_log_{session_id}.yaml"
 
 
-def session_log_path(when: date | None = None) -> Path:
-    return PAYMENTS_DIR / f"session_log_{_today_stamp(when)}.yaml"
+def panel_path() -> Path:
+    return PROCESSED_DIR / "processed_panels.csv"
