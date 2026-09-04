@@ -19,3 +19,8 @@ sessions:
     oTree_codes: [9vfoiax5]
     include: true
     notes: "Lab session FNCE 449/668. 37 completers of 39 who started (2 left in intro)."
+  - id: "20260904"
+    export_date: "2026-09-04"
+    oTree_codes: [sttmxluq]
+    include: true
+    notes: "Lab session. 22 completers of 22 who started."

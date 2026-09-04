@@ -1,0 +1,25 @@
+session_id: '20260904'
+export_date: '2026-09-04'
+oTree_codes:
+- sttmxluq
+notes: Lab session. 22 completers of 22 who started.
+processed_at: '2026-09-04T20:22:22.698561+00:00'
+counts:
+  slots_in_export: 100
+  started: 22
+  completed: 22
+  incomplete: 0
+  never_started: 78
+  paid: 22
+payoffs_points:
+  n: 22
+  min: 106.96
+  max: 153.01
+  mean: 125.42500000000001
+payments:
+  participation_fee_cad: 15.0
+  exchange_rate: 0.1
+  experimental_payoff_cad_sum: 275.97
+  total_payment_cad_sum: 605.97
+incomplete: []
+flags: []
